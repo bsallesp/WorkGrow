@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Effect Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useEffect",
+    "tags": ["effect", "side-effects", "lifecycle", "synchronization"]
+  },
+  "concepts": [
+    {
+      "id": "use_effect_definition",
+      "name": "useEffect Definition",
+      "type": "concept",
+      "description": "useEffect is a React Hook that lets you synchronize a component with an external system. Some components need to stay connected to the network, some browser DOM API, or another library. useEffect gives you a way to coordinate these systems with your component's state. It runs after the component renders and commits updates to the screen.",
+      "details": [
+        "Effects let you specify side effects that are caused by rendering itself, rather than by a particular event.",
+        "It serves the same purpose as componentDidMount, componentDidUpdate, and componentWillUnmount in React class components, but unified into a single API.",
+        "Effects run at the end of the rendering process, after the screen has been updated. This is good for things that don't need to block the user from seeing the screen update."
+      ],
+      "code_example": {
+        "snippet": "import { useEffect } from 'react';\nimport { createConnection } from './chat.js';\n\nfunction ChatRoom({ roomId }) {\n  const [serverUrl, setServerUrl] = useState('https://localhost:1234');\n\n  useEffect(() => {\n    const connection = createConnection(serverUrl, roomId);\n    connection.connect();\n    return () => {\n      connection.disconnect();\n    };\n  }, [serverUrl, roomId]);\n  // ...\n}",
+        "explanation": "In this example, the Effect connects to a chat room after the component mounts or when serverUrl/roomId changes. It also cleans up by disconnecting when the component unmounts or before re-running."
+      }
+    },
+    {
+      "id": "use_effect_dependencies",
+      "name": "Dependency Array",
+      "type": "concept",
+      "description": "The second argument to useEffect is an array of dependencies. It tells React when to re-run the effect. React compares the current value of each dependency with its value during the previous render using Object.is comparison.",
+      "details": [
+        "If you omit the dependency array, the effect runs after every single render (and re-render).",
+        "If you pass an empty array [], the effect runs only once after the initial mount, and never again (until unmount).",
+        "If you pass [a, b], the effect runs after the initial mount and whenever 'a' or 'b' have changed since the last render.",
+        "You must include every value used inside the Effect that can change over time (props, state, variables derived from them) in this array. React's linter helps verify this."
+      ]
+    },
+    {
+      "id": "use_effect_cleanup",
+      "name": "Cleanup Function",
+      "type": "pattern",
+      "description": "An Effect can return a cleanup function. React calls this function before the component unmounts, and also before re-running the Effect due to dependency changes.",
+      "details": [
+        "This is essential for effects that create subscriptions, timers, event listeners, or connections to avoid memory leaks and incorrect behavior.",
+        "React performs the cleanup of the previous render's effect *before* running the effect for the current render.",
+        "In Strict Mode (development), React will aggressively mount, unmount, and remount components to ensure your cleanup logic is correct and mirrors your setup logic."
+      ],
+      "code_example": {
+        "snippet": "useEffect(() => {\n  const handleResize = () => console.log(window.innerWidth);\n  window.addEventListener('resize', handleResize);\n  \n  // Cleanup function\n  return () => {\n    window.removeEventListener('resize', handleResize);\n  };\n}, []);",
+        "explanation": "This pattern ensures that we don't attach multiple identical event listeners to the window if the component re-renders or remounts."
+      }
+    },
+    {
+      "id": "use_effect_vs_events",
+      "name": "Effects vs Events",
+      "type": "concept",
+      "description": "It is crucial to distinguish when to use an Effect versus an Event Handler. Logic that runs in response to a specific user interaction (like a click) belongs in an Event Handler. Logic that runs because the user 'sees' the component or because data changed belongs in an Effect.",
+      "details": [
+        "Buying a product happens because the user clicked 'Buy'. This should be an Event Handler.",
+        "Connecting to a chat room happens because the user visited the Chat page. This should be an Effect.",
+        "If your logic needs to run *only* once on mount, but it's not synchronizing with anything external, you might not need an Effect at all (e.g., global app initialization)."
+      ]
+    },
+    {
+      "id": "use_effect_lifecycle",
+      "name": "Effect Lifecycle",
+      "type": "advanced_concept",
+      "description": "An Effect's lifecycle is different from a component's lifecycle. A component mounts, updates, and unmounts. An Effect only does two things: start synchronizing something, and stop synchronizing it.",
+      "details": [
+        "If your effect depends on props or state, that cycle might happen multiple times while the component remains mounted.",
+        "From the Effect's perspective, it doesn't matter if the component is mounting or updating; it only matters that it needs to start synchronizing with the new values.",
+        "React 19 introduces 'useEffectEvent' to help separate reactive logic (re-syncing) from non-reactive logic (reading the latest value inside the effect without re-triggering it)."
+      ]
+    }
+  ]
+}
