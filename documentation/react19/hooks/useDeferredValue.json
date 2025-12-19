@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Performance Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useDeferredValue"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["performance", "concurrency", "ui-responsiveness"],
+    "prerequisites": ["Rendering", "State Management", "Debouncing/Throttling"]
+  },
+  "mental_model": {
+    "analogy": "Low Priority Email",
+    "explanation": "Normal state updates are like urgent text messages—you stop everything to read them. `useDeferredValue` is like a low-priority email. You know it's there, but you finish your current urgent work (typing, clicking) before you deal with it."
+  },
+  "real_world_use_cases": [
+    "Search inputs where the results list is heavy to render. You want the input to stay responsive (typing) while the list updates later.",
+    "Data visualization where a chart takes time to redraw when filters change.",
+    "Replacing manual 'debouncing' logic with a more native, integrated React approach."
+  ],
+  "related_concepts": [
+    { "concept": "useTransition", "relationship": "Similar goal (non-blocking updates), but useTransition wraps the *setter*, while useDeferredValue wraps the *value*." },
+    { "concept": "Debouncing", "relationship": "The traditional technique useDeferredValue often replaces (though they behave differently)." },
+    { "concept": "Suspense", "relationship": "Deferred values can integrate with Suspense to show old content instead of a loading spinner." }
+  ],
+  "concepts": [
+    {
+      "id": "use_deferred_value_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useDeferredValue is a React Hook that lets you defer updating a part of the UI. It returns a deferred version of the value that may 'lag behind' the original value.",
+      "details": [
+        "React will first render with the old value (so the UI feels instant).",
+        "Then, in the background, it attempts to render with the new value.",
+        "If the user types again, React interrupts the background render to handle the urgent update.",
+        "React 19 adds an `initialValue` option to handle the very first render."
+      ],
+      "code_example": {
+        "snippet": "function SearchPage({ query }) {\n  const deferredQuery = useDeferredValue(query);\n  // The list renders with the 'lagging' deferredQuery\n  // while the input stays responsive to 'query'\n  return (\n    <>\n      <SearchInput value={query} />\n      <SlowList text={deferredQuery} />\n    </>\n  );\n}",
+        "explanation": "Even if `SlowList` takes 200ms to render, typing in `SearchInput` will feel instant because React delays the list update."
+      }
+    },
+    {
+      "id": "stale_state_indicator",
+      "name": "Stale State Indicator",
+      "type": "pattern",
+      "description": "You can use the difference between the current value and the deferred value to show a visual cue that the UI is updating.",
+      "details": [
+        "If `query !== deferredQuery`, it means React is working in the background.",
+        "You can use this to dim the list or show a small spinner.",
+        "This provides better feedback than just freezing the screen."
+      ],
+      "code_example": {
+        "snippet": "<div style={{ opacity: query !== deferredQuery ? 0.5 : 1 }}>\n  <SlowList text={deferredQuery} />\n</div>",
+        "explanation": "The list fades out slightly while it's calculating the new results."
+      }
+    },
+    {
+      "id": "react_19_initial_value",
+      "name": "React 19 Initial Value",
+      "type": "advanced_concept",
+      "description": "React 19 introduces an optional second argument: `initialValue`.",
+      "details": [
+        "Signature: `const value = useDeferredValue(newValue, initialValue)`.",
+        "This allows you to specify what should be rendered immediately on the first mount, scheduling a re-render in the background with the `newValue`.",
+        "Useful for server rendering or complex hydration scenarios."
+      ]
+    }
+  ]
+}

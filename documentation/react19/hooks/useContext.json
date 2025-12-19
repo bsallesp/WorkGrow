@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Context Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useContext"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["state-management", "prop-drilling", "global-state", "context"],
+    "prerequisites": ["Components", "Props", "createContext"]
+  },
+  "mental_model": {
+    "analogy": "Broadcast Tower",
+    "explanation": "Props are like passing a note from person to person. Context is like a radio broadcast: the Provider is the tower, and any component can tune in (useContext) to listen, regardless of how far away it is."
+  },
+  "real_world_use_cases": [
+    "Theming: Toggling between Dark and Light mode across the entire app.",
+    "User Authentication: Keeping the current user logged in and accessible to the profile, header, and protected routes.",
+    "Multilingual Support: Switching languages (i18n) globally.",
+    "Routing: (Used internally by routers) to know which URL is currently active."
+  ],
+  "related_concepts": [
+    { "concept": "createContext", "relationship": "The function required to create the Context object that useContext reads." },
+    { "concept": "useReducer", "relationship": "Often combined with Context to manage complex global state (like Redux)." },
+    { "concept": "Prop Drilling", "relationship": "The anti-pattern that useContext solves by avoiding passing props through intermediate components." }
+  ],
+  "concepts": [
+    {
+      "id": "use_context_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useContext is a React Hook that lets you read and subscribe to context from your component.",
+      "details": [
+        "It accepts a context object (the value returned from React.createContext) and returns the current context value.",
+        "The current context value is determined by the value prop of the nearest <MyContext> provider above the calling component in the tree.",
+        "When the nearest <MyContext> provider updates, this Hook will trigger a re-render with the latest context value."
+      ],
+      "code_example": {
+        "snippet": "import { useContext } from 'react';\nimport { ThemeContext } from './ThemeContext';\n\nexport default function Button() {\n  const theme = useContext(ThemeContext);\n  return <button className={theme}>I am styled!</button>;\n}",
+        "explanation": "The Button component reads the current 'theme' directly. It doesn't need to receive it as a prop from its parent."
+      }
+    },
+    {
+      "id": "context_re_rendering",
+      "name": "Re-rendering Behavior",
+      "type": "advanced_concept",
+      "description": "Context is powerful but can cause performance issues if not used carefully.",
+      "details": [
+        "When a Provider's value changes, *every* component consuming that context will re-render.",
+        "Even if a component only uses part of the value, it will still re-render if the object reference changes.",
+        "React 19 optimizes this, but it is still good practice to keep context values small or split them into multiple contexts."
+      ]
+    },
+    {
+      "id": "new_use_api",
+      "name": "The 'use' API (React 19)",
+      "type": "advanced_concept",
+      "description": "React 19 introduces a new API called `use` which is more flexible than `useContext`.",
+      "details": [
+        "`use(Context)` works exactly like `useContext(Context)` but can be called inside loops and conditional statements.",
+        "`useContext` must still be called at the top level.",
+        "`useContext` remains the standard hook for simple top-level context consumption."
+      ]
+    }
+  ]
+}

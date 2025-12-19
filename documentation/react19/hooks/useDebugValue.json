@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Debug Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useDebugValue"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["debugging", "devtools", "custom-hooks"],
+    "prerequisites": ["Custom Hooks", "React DevTools"]
+  },
+  "mental_model": {
+    "analogy": "Product Label",
+    "explanation": "Standard hooks are like generic brown boxes in a warehouse. `useDebugValue` lets you slap a custom label on the box (like 'Fragile' or 'Contents: 5 items') so when you inspect the warehouse (DevTools), you know exactly what's inside without opening it."
+  },
+  "real_world_use_cases": [
+    "Developing a shared library of custom hooks (e.g., react-query, use-hooks).",
+    " displaying the current status of a complex hook (e.g., 'Connected', 'Loading', 'Error') in DevTools.",
+    "Formatting a date or large object into a human-readable string for debugging purposes."
+  ],
+  "related_concepts": [
+    { "concept": "Custom Hooks", "relationship": "The only place where useDebugValue is actually useful." },
+    { "concept": "React DevTools", "relationship": "The tool where the output of useDebugValue is displayed." }
+  ],
+  "concepts": [
+    {
+      "id": "use_debug_value_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useDebugValue is a React Hook that lets you display a label for custom hooks in React DevTools.",
+      "details": [
+        "It is designed for developers building libraries or complex custom hooks.",
+        "It does nothing for the end-user application; it only affects the developer experience in DevTools.",
+        "You should not add it to every custom hook, only those that are reused and complex."
+      ],
+      "code_example": {
+        "snippet": "function useOnlineStatus() {\n  const [isOnline, setIsOnline] = useState(true);\n  // ... logic ...\n  useDebugValue(isOnline ? 'Online' : 'Offline');\n  return isOnline;\n}",
+        "explanation": "In React DevTools, instead of just seeing 'State: true', you will see 'OnlineStatus: \"Online\"', making it instantly clear what the hook is doing."
+      }
+    },
+    {
+      "id": "deferred_formatting",
+      "name": "Deferred Formatting",
+      "type": "pattern",
+      "description": "Formatting a debug value might be expensive (e.g., parsing dates). useDebugValue supports a second argument to defer this work.",
+      "details": [
+        "Pass a formatting function as the second argument.",
+        "React will only call this function if the Hooks are actually inspected in DevTools.",
+        "This prevents performance penalties in production or when DevTools is closed."
+      ],
+      "code_example": {
+        "snippet": "useDebugValue(date, date => date.toDateString());",
+        "explanation": "The `toDateString()` method is only called when you click on this hook in DevTools."
+      }
+    }
+  ]
+}
