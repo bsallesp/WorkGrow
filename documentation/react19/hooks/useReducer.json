@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "title": "useReducer",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "State Hooks",
+    "description": "A hook for managing complex state logic that involves multiple sub-values or when the next state depends on the previous one. It is an alternative to useState."
+  },
+  "taxonomy": {
+    "primary_domain": "State Management",
+    "secondary_domain": "Logic Encapsulation",
+    "related_concepts": [
+      "Redux",
+      "useState",
+      "Immutability",
+      "Dispatch"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Kitchen Order Ticket",
+    "explanation": "In a busy restaurant kitchen (your component), the chef (state updater) doesn't just listen to everyone shouting at once. Instead, waiters (event handlers) write specific orders (actions) on tickets ('ADD_SALAD', 'REMOVE_SOUP') and hand them to the expediter (reducer). The expediter looks at the current state of the table and the new ticket, then decides exactly what the final plate (new state) should look like."
+  },
+  "syntax": {
+    "signature": "const [state, dispatch] = useReducer(reducer, initialArg, init?)",
+    "parameters": [
+      {
+        "name": "reducer",
+        "type": "Function",
+        "description": "A function (state, action) => newState. It must be pure."
+      },
+      {
+        "name": "initialArg",
+        "type": "any",
+        "description": "The initial state calculated from."
+      },
+      {
+        "name": "init",
+        "type": "Function",
+        "optional": true,
+        "description": "An optional initializer function that returns the initial state."
+      }
+    ],
+    "return_value": {
+      "type": "Array",
+      "description": "Returns [state, dispatch]."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Complex Form State",
+      "description": "Managing a form with many fields and validation logic.",
+      "code_snippet": "function reducer(state, action) {\n  switch (action.type) {\n    case 'changed_name': {\n      return { ...state, name: action.nextName };\n    }\n    case 'changed_age': {\n      return { ...state, age: action.nextAge };\n    }\n  }\n  throw Error('Unknown action: ' + action.type);\n}\n\nconst [state, dispatch] = useReducer(reducer, { name: 'Taylor', age: 42 });"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Mutating State",
+      "solution": "Reducers must be pure. Never mutate state directly (e.g., state.age = 50). Always return a new object.",
+      "severity": "Error"
+    },
+    {
+      "pitfall": "Overusing for simple state",
+      "solution": "If you have a single boolean or string, useState is much simpler and more readable.",
+      "severity": "Info"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Action Types as Constants",
+      "reason": "Prevents typos in action strings."
+    },
+    {
+      "practice": "Immer Integration",
+      "reason": "For very complex nested state, consider using Immer with useReducer to write mutable-style code that produces immutable updates."
+    }
+  ]
+}

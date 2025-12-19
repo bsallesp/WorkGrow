@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "useOptimistic",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "UI Feedback Hooks",
+    "description": "A new hook that lets you optimistically show a different state while an asynchronous action is pending. It automatically reverts to the actual state once the action finishes or fails."
+  },
+  "taxonomy": {
+    "primary_domain": "User Experience",
+    "secondary_domain": "State Management",
+    "related_concepts": [
+      "Optimistic UI",
+      "useActionState",
+      "Forms",
+      "Server Actions"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Instant Sketch Artist",
+    "explanation": "Imagine you order a custom portrait. Instead of waiting a week for the final painting to see anything, an artist immediately hands you a quick sketch of what it *will* look like. You display this sketch on your wall. When the real painting arrives a week later, you simply swap the sketch for the masterpiece. If the painting gets lost in the mail, you take down the sketch and go back to the empty wall (or previous state)."
+  },
+  "syntax": {
+    "signature": "const [optimisticState, addOptimistic] = useOptimistic(state, updateFn)",
+    "parameters": [
+      {
+        "name": "state",
+        "type": "any",
+        "description": "The value to be returned initially and whenever no action is pending."
+      },
+      {
+        "name": "updateFn",
+        "type": "Function",
+        "description": "A pure function that takes the current state and the optimistic value, returning the merged optimistic state."
+      }
+    ],
+    "return_value": {
+      "type": "Array",
+      "description": "Returns an array with two values: [optimisticState, addOptimistic]."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Instant Message Sending",
+      "description": "Showing a sent message in the chat list immediately, before the server confirms it.",
+      "code_snippet": "import { useOptimistic, useState, useRef } from 'react';\n\nfunction Chat({ messages, sendMessage }) {\n  const formRef = useRef();\n  const [optimisticMessages, addOptimisticMessage] = useOptimistic(\n    messages,\n    (state, newMessage) => [...state, { text: newMessage, sending: true }]\n  );\n\n  return (\n    <>\n      {optimisticMessages.map((msg, index) => (\n        <div key={index} style={{ opacity: msg.sending ? 0.5 : 1 }}>\n          {msg.text}\n        </div>\n      ))}\n      <form action={async (formData) => {\n        const text = formData.get('message');\n        formRef.current.reset();\n        addOptimisticMessage(text);\n        await sendMessage(text);\n      }} ref={formRef}>\n        <input name=\"message\" />\n        <button type=\"submit\">Send</button>\n      </form>\n    </>\n  );\n}"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Using for non-async updates",
+      "solution": "useOptimistic is designed to work with async actions (like Server Actions). For synchronous updates, standard state is sufficient.",
+      "severity": "Info"
+    },
+    {
+      "pitfall": "Assuming the update succeeded",
+      "solution": "Remember that the optimistic state is temporary. If the server action fails, the state will revert. Ensure your UI handles this reversion gracefully.",
+      "severity": "Warning"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Combine with Forms",
+      "reason": "It works seamlessly with the new React 19 form actions."
+    },
+    {
+      "practice": "Visual Cues",
+      "reason": "Visually distinguish the optimistic state (e.g., greyed out text) so the user knows it's pending confirmation."
+    }
+  ]
+}
