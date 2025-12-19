@@ -13,11 +13,10 @@ export async function Collections(request: HttpRequest, context: InvocationConte
 
     if (request.method === 'GET') {
         const collections = db.collections.getAll();
-        // Filter by user or public? For now, let's return all or just user's. 
-        // User said "create the list of already existing collections", implies shared or personal.
-        // Let's return all for now so they can see examples, or filter by user.
-        // Let's filter by user AND shared ones if we had that concept. For now just user's.
-        const userCollections = collections.filter(c => c.userId === user.id);
+        
+        // Return collections belonging to the user OR the demo user (shared content)
+        // This ensures interview prep content is visible to everyone
+        const userCollections = collections.filter(c => c.userId === user.id || c.userId === 'demo-user-id');
         
         return {
             status: 200,
