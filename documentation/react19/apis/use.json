@@ -1,0 +1,69 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "APIs",
+    "sub_topic": "Resource APIs",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/use"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["async", "promises", "context", "suspense"],
+    "prerequisites": ["Promises", "Context", "Suspense"]
+  },
+  "mental_model": {
+    "analogy": "Unwrapping a Gift",
+    "explanation": "Imagine a Promise or a Context as a wrapped gift box. Traditionally, you had to wait for a special occasion (useEffect) or use a specific tool (useContext) to open it. With `use`, you can just say 'open this' right in the middle of your render logic, and if it's not ready (Promise pending), React pauses (suspends) until it is."
+  },
+  "real_world_use_cases": [
+    "Reading a Promise directly inside a component (e.g., data fetching in Client Components).",
+    "Consuming Context conditionally (e.g., inside an `if` statement or loop).",
+    "Streaming data from Server Components to Client Components.",
+    "Replacing `useContext` for more flexible context consumption."
+  ],
+  "related_concepts": [
+    { "concept": "Suspense", "relationship": "The mechanism that handles the 'loading' state when `use` reads a pending Promise." },
+    { "concept": "ErrorBoundary", "relationship": "Used to catch errors if the Promise passed to `use` rejects." },
+    { "concept": "useContext", "relationship": "`use(Context)` is equivalent to `useContext(Context)`, but `use` is more flexible." }
+  ],
+  "concepts": [
+    {
+      "id": "use_api_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "`use` is a React API that lets you read the value of a resource like a Promise or context.",
+      "details": [
+        "Unlike Hooks, `use` can be called within loops and conditional statements.",
+        "When called with a Promise, it integrates with Suspense and Error Boundaries.",
+        "When called with a Context, it works like `useContext`."
+      ],
+      "code_example": {
+        "snippet": "import { use, Suspense } from 'react';\n\nfunction Message({ messagePromise }) {\n  const messageContent = use(messagePromise);\n  return <p>{messageContent}</p>;\n}\n\nfunction App() {\n  return (\n    <Suspense fallback={<p>Loading...</p>}>\n      <Message messagePromise={fetchMessage()} />\n    </Suspense>\n  );\n}",
+        "explanation": "The `Message` component attempts to read the value of `messagePromise`. If it's pending, the `Suspense` boundary shows 'Loading...'. When resolved, it renders the message."
+      }
+    },
+    {
+      "id": "use_vs_hooks",
+      "name": "Comparison with Hooks",
+      "type": "concept",
+      "description": "`use` is not technically a Hook, despite its name starting with 'use'.",
+      "details": [
+        "Hooks must be called at the top level of a component.",
+        "`use` can be called inside `if` blocks, loops, or `try/catch` blocks (though passing a Promise to `use` inside try-catch is not recommended for control flow, prefer Error Boundaries).",
+        "This flexibility allows for conditional data fetching or context consumption."
+      ]
+    },
+    {
+      "id": "use_pitfall_render",
+      "name": "Pitfall: Creating Promises in Render",
+      "type": "pitfall",
+      "description": "Do not create Promises inside the render function and pass them to `use`.",
+      "details": [
+        "If you create a Promise in render (e.g., `use(fetch('/api'))`), it will be recreated on every render.",
+        "This causes an infinite loop or redundant network requests.",
+        "Promises should be created in Server Components, Server Actions, or cached (e.g., with a library or outside the component)."
+      ]
+    }
+  ]
+}

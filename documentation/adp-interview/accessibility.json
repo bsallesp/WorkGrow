@@ -1,0 +1,75 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "Frontend",
+    "topic": "Accessibility",
+    "sub_topic": "Integration",
+    "version": "WCAG 2.1",
+    "doc_url": "https://www.w3.org/WAI/standards-guidelines/wcag/"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["a11y", "aria", "semantic-html", "keyboard-nav"],
+    "prerequisites": ["HTML Basics"]
+  },
+  "mental_model": {
+    "analogy": "Curb Cuts",
+    "explanation": "Curb cuts (ramps on sidewalks) were designed for wheelchairs, but they help people with strollers, bikes, and deliveries too. Similarly, Web Accessibility helps screen reader users, but also power users (keyboard shortcuts), people with slow internet (semantic structure), and improves SEO."
+  },
+  "real_world_use_cases": [
+    "Making the app usable for visually impaired users via Screen Readers (NVDA, VoiceOver).",
+    "Ensuring forms can be navigated and submitted using only the Keyboard.",
+    "Providing sufficient color contrast for users with low vision."
+  ],
+  "related_concepts": [
+    { "concept": "Semantic HTML", "relationship": "The foundation of accessibility. Using `<button>` instead of `<div onClick>`." },
+    { "concept": "WAI-ARIA", "relationship": "Attributes to bridge gaps when native HTML isn't enough." }
+  ],
+  "concepts": [
+    {
+      "id": "semantic_html",
+      "name": "Semantic HTML",
+      "type": "concept",
+      "description": "Using the correct HTML element for the job.",
+      "details": [
+        "Buttons (`<button>`) for actions, Links (`<a>`) for navigation.",
+        "Headings (`h1`-`h6`) for structure, not just font size.",
+        "Native elements provide keyboard focus and screen reader announcements for free."
+      ]
+    },
+    {
+      "id": "keyboard_navigation",
+      "name": "Keyboard Navigation",
+      "type": "concept",
+      "description": "Ensuring all interactive elements are reachable and usable via Tab/Enter/Space.",
+      "details": [
+        "Focus styles must be visible (`outline`).",
+        "Logical Tab Order (follows visual flow).",
+        "No 'Keyboard Traps' (user can tab in AND out)."
+      ]
+    },
+    {
+      "id": "aria_attributes",
+      "name": "WAI-ARIA",
+      "type": "concept",
+      "description": "Web Accessibility Initiative - Accessible Rich Internet Applications.",
+      "details": [
+        "Use sparingly: 'No ARIA is better than bad ARIA'.",
+        "`aria-label`: Provides a label for icon-only buttons.",
+        "`aria-expanded`: Tells screen readers if a menu is open/closed.",
+        "`role`: Defines what a custom element is (e.g., `role='dialog'`)."
+      ]
+    },
+    {
+      "id": "automated_testing",
+      "name": "Automated A11y Testing",
+      "type": "concept",
+      "description": "Tools to catch common accessibility errors.",
+      "details": [
+        "axe-core: Engine used by many tools.",
+        "ESLint-plugin-jsx-a11y: Static analysis for React code.",
+        "Lighthouse: Audit tool in Chrome DevTools."
+      ]
+    }
+  ]
+}

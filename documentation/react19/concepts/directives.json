@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Architecture",
+    "sub_topic": "Directives",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/rsc/directives"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["architecture", "bundling", "client-side", "server-side"],
+    "prerequisites": ["React Components", "Modules"]
+  },
+  "mental_model": {
+    "analogy": "Shipping Labels",
+    "explanation": "Directives are like shipping labels on a package. `'use client'` tells the delivery truck (Bundler) 'This package goes to the customer's house (Browser)'. `'use server'` tells it 'This package stays in the warehouse (Server) for internal processing'."
+  },
+  "real_world_use_cases": [
+    "Marking a component as interactive (state, effects) using `'use client'`.",
+    "Marking a function as a server-side action using `'use server'`.",
+    "Defining boundaries between server-only code and client-side code."
+  ],
+  "related_concepts": [
+    { "concept": "Server Components", "relationship": "The default environment where no directive is needed (in frameworks like Next.js)." },
+    { "concept": "Client Components", "relationship": "Components marked with `'use client'`." },
+    { "concept": "Server Actions", "relationship": "Functions marked with `'use server'`." }
+  ],
+  "concepts": [
+    {
+      "id": "use_client_directive",
+      "name": "'use client'",
+      "type": "concept",
+      "description": "Marks a file as a Client Component.",
+      "details": [
+        "Must be placed at the very top of the file (before imports).",
+        "Required if you use Hooks (`useState`, `useEffect`) or Event Handlers.",
+        "It defines a 'boundary': everything imported into this file becomes part of the client bundle."
+      ],
+      "code_example": {
+        "snippet": "'use client';\n\nimport { useState } from 'react';\n\nexport default function Counter() {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(count + 1)}>{count}</button>;\n}",
+        "explanation": "Without `'use client'`, this component would fail in a Server Component environment because it uses `useState`."
+      }
+    },
+    {
+      "id": "use_server_directive",
+      "name": "'use server'",
+      "type": "concept",
+      "description": "Marks a function or file as a Server Action.",
+      "details": [
+        "Can be at the top of a file (all exports become actions).",
+        "Can be at the top of an async function body.",
+        "Tells the bundler to create an API endpoint for this function."
+      ],
+      "code_example": {
+        "snippet": "// actions.ts\n'use server';\n\nexport async function submitData(data) {\n  await db.save(data);\n}",
+        "explanation": "This function is guaranteed to run on the server, even if imported into a Client Component."
+      }
+    },
+    {
+      "id": "directive_pitfall_imports",
+      "name": "Pitfall: Importing Server Code in Client",
+      "type": "pitfall",
+      "description": "You cannot import a Server Component into a Client Component.",
+      "details": [
+        "If `ComponentA` has `'use client'`, it cannot `import ComponentB` (Server Component).",
+        "Instead, pass `ComponentB` as a `prop` (like `children`) to `ComponentA`.",
+        "This is known as the 'Hole' or 'Slot' pattern."
+      ]
+    }
+  ]
+}

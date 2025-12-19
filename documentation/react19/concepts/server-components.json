@@ -1,0 +1,70 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Architecture",
+    "sub_topic": "Server Components",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/rsc/server-components"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["performance", "server-side", "architecture", "data-fetching"],
+    "prerequisites": ["React Fundamentals", "Client vs Server"]
+  },
+  "mental_model": {
+    "analogy": "Head Chef vs. Waiter",
+    "explanation": "Server Components are like the Head Chef in the kitchen (Server). They have direct access to the ingredients (Database/File System) and prepare the dish (HTML/Data). Client Components are like the Waiter (Browser). They take the prepared dish to the customer and handle interactions (Clicking, Scrolling) but don't cook the food themselves."
+  },
+  "real_world_use_cases": [
+    "Fetching data directly from a database without an API layer.",
+    "Keeping large dependencies (like markdown parsers) on the server to reduce bundle size.",
+    "Rendering static content that doesn't need interactivity.",
+    "Securing sensitive data (API keys) by keeping them out of the client bundle."
+  ],
+  "related_concepts": [
+    { "concept": "Client Components", "relationship": "The interactive counterparts that run in the browser ('use client')." },
+    { "concept": "Server Actions", "relationship": "The mechanism for Client Components to send data back to Server Components." },
+    { "concept": "Hydration", "relationship": "The process of making the HTML interactive on the client." }
+  ],
+  "concepts": [
+    {
+      "id": "rsc_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "React Server Components (RSC) allow you to render components on the server at build time or request time.",
+      "details": [
+        "They are the default in Next.js App Router and other modern React frameworks.",
+        "They do NOT send their code to the client, only the generated UI.",
+        "They cannot use Hooks (useState, useEffect) or Event Listeners (onClick)."
+      ],
+      "code_example": {
+        "snippet": "// This is a Server Component by default\nimport db from './db';\n\nasync function ProductList() {\n  const products = await db.query('SELECT * FROM products');\n  return (\n    <ul>\n      {products.map(p => <li key={p.id}>{p.name}</li>)}\n    </ul>\n  );\n}",
+        "explanation": "This component runs entirely on the server. The `db` library and the query logic never reach the browser. The client only receives the resulting `<ul>` and `<li>` elements."
+      }
+    },
+    {
+      "id": "rsc_constraints",
+      "name": "Constraints",
+      "type": "concept",
+      "description": "Because they run on the server, RSCs have specific limitations.",
+      "details": [
+        "Cannot use `useState`, `useReducer`, `useEffect`, or `useLayoutEffect`.",
+        "Cannot use browser APIs like `localstorage` or `window`.",
+        "Cannot use custom hooks that depend on state or effects.",
+        "Cannot add event listeners like `onClick` or `onChange`."
+      ]
+    },
+    {
+      "id": "rsc_interleaving",
+      "name": "Interleaving Client and Server",
+      "type": "concept",
+      "description": "You can mix Server and Client components.",
+      "details": [
+        "Server Components can import and render Client Components.",
+        "Client Components *cannot* import Server Components directly.",
+        "However, you can pass a Server Component as a `child` prop to a Client Component."
+      ]
+    }
+  ]
+}

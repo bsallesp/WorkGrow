@@ -1,0 +1,75 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "PostgreSQL",
+    "topic": "Database",
+    "sub_topic": "Design & Optimization",
+    "version": "14+",
+    "doc_url": "https://www.postgresql.org/docs/"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["sql", "normalization", "indexing", "performance", "acid"],
+    "prerequisites": ["Relational Model", "SQL Basics"]
+  },
+  "mental_model": {
+    "analogy": "The Library System",
+    "explanation": "Normalization is organizing books by category so you don't have duplicates (Consistency). Indexing is the card catalog that tells you exactly which shelf a book is on (Performance). Transactions ensure that if you borrow a book, the system updates 'Checked Out' and 'User Record' simultaneously, or not at all if the power fails (ACID)."
+  },
+  "real_world_use_cases": [
+    "Storing user profiles, orders, and products.",
+    "Ensuring data integrity in financial transactions.",
+    "Running complex analytics queries."
+  ],
+  "related_concepts": [
+    { "concept": "NoSQL", "relationship": "Alternative to SQL (like MongoDB), better for unstructured data but lacks strict schema enforcement." },
+    { "concept": "ORM", "relationship": "Object-Relational Mapper (Entity Framework) used to interact with the DB from code." }
+  ],
+  "concepts": [
+    {
+      "id": "normalization",
+      "name": "Normalization",
+      "type": "concept",
+      "description": "The process of structuring a relational database to reduce data redundancy and improve data integrity.",
+      "details": [
+        "1NF: Atomic columns (no lists in a cell).",
+        "2NF: No partial dependencies (all columns depend on the whole primary key).",
+        "3NF: No transitive dependencies (non-key columns don't depend on other non-key columns).",
+        "Trade-off: More joins required, which can impact read performance."
+      ]
+    },
+    {
+      "id": "indexing",
+      "name": "Indexing",
+      "type": "concept",
+      "description": "Data structure that improves the speed of data retrieval operations.",
+      "details": [
+        "B-Tree: Default, good for equality and range queries.",
+        "GIN/GiST: Good for full-text search and JSONB data in Postgres.",
+        "Cost: Slows down Write operations (Insert/Update/Delete) because the index must be updated."
+      ]
+    },
+    {
+      "id": "acid",
+      "name": "ACID Properties",
+      "type": "concept",
+      "description": "Guarantees for reliable processing of database transactions.",
+      "details": [
+        "Atomicity: All or nothing.",
+        "Consistency: Valid state before and after.",
+        "Isolation: Transactions don't interfere with each other.",
+        "Durability: Saved changes survive power failure."
+      ]
+    },
+    {
+      "id": "n_plus_one",
+      "name": "The N+1 Problem",
+      "type": "pitfall",
+      "description": "A performance issue where code executes N additional queries to fetch related data for N items.",
+      "details": [
+        "Common in ORMs (like EF Core) when Lazy Loading is used.",
+        "Solution: Eager Loading (`.Include()`) to fetch data in a single JOIN query."
+      ]
+    }
+  ]
+}

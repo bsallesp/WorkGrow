@@ -1,0 +1,73 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Architecture",
+    "sub_topic": "State Management",
+    "version": "18+",
+    "doc_url": "https://react.dev/learn/managing-state"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["context", "redux", "zustand", "local-state", "server-state"],
+    "prerequisites": ["React Hooks", "Props Drilling"]
+  },
+  "mental_model": {
+    "analogy": "The Water Distribution System",
+    "explanation": "Local State (useState) is like a water bottle on your desk (easy to reach, personal). Context is like the building's plumbing (available on every floor/component without carrying buckets). Redux/Zustand is like the city water reservoir (centralized, regulated, accessible by everyone)."
+  },
+  "real_world_use_cases": [
+    "Managing user authentication status across the app.",
+    "Handling complex form data with multiple steps.",
+    "Caching server responses to avoid refetching."
+  ],
+  "related_concepts": [
+    { "concept": "Prop Drilling", "relationship": "The problem that Context and State Management libraries solve." },
+    { "concept": "Immutability", "relationship": "The core principle required for predictable state updates." }
+  ],
+  "concepts": [
+    {
+      "id": "local_state",
+      "name": "Local State",
+      "type": "concept",
+      "description": "State managed within a single component using `useState` or `useReducer`.",
+      "details": [
+        "Best for UI state (e.g., isModalOpen, inputValue).",
+        "Should be the default choice unless data needs to be shared."
+      ]
+    },
+    {
+      "id": "context_api",
+      "name": "Context API",
+      "type": "concept",
+      "description": "Built-in React feature to share values like themes or auth user across the tree.",
+      "details": [
+        "Avoids prop drilling.",
+        "Can cause performance issues if not used carefully (updates trigger re-renders in all consumers).",
+        "Best for low-frequency updates (Theme, Lang, User)."
+      ]
+    },
+    {
+      "id": "server_state",
+      "name": "Server State",
+      "type": "concept",
+      "description": "Data that persists on a server and is fetched by the client.",
+      "details": [
+        "Tools: React Query (TanStack Query), SWR, Apollo Client.",
+        "Features: Caching, deduplication, background updates, optimistic updates.",
+        "Distinct from Global Client State (Redux)."
+      ]
+    },
+    {
+      "id": "global_state_libraries",
+      "name": "Global State Libraries",
+      "type": "concept",
+      "description": "External libraries for complex client-side state.",
+      "details": [
+        "Redux: Predictable, uses actions/reducers, great for debugging (DevTools).",
+        "Zustand: Minimalist, hook-based, easy to setup.",
+        "Recoil/Jotai: Atomic state, great for derived state."
+      ]
+    }
+  ]
+}

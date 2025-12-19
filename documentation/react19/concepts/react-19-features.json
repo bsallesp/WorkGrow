@@ -1,0 +1,75 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Features",
+    "sub_topic": "New Features",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/blog/2024/04/25/react-19"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["metadata", "refs", "stylesheets", "improvements"],
+    "prerequisites": ["React Fundamentals"]
+  },
+  "mental_model": {
+    "analogy": "Operating System Upgrade",
+    "explanation": "React 19 is like a major OS upgrade. It brings big new apps (Server Components), but also lots of 'quality of life' improvements. You don't need `forwardRef` anymore (like not needing a dongle for headphones), and you can manage window titles directly (like changing desktop wallpaper easily)."
+  },
+  "real_world_use_cases": [
+    "Setting the document title dynamically from any component.",
+    "Injecting meta tags for SEO.",
+    "Passing refs to functional components without wrappers.",
+    "Preloading fonts and stylesheets."
+  ],
+  "related_concepts": [
+    { "concept": "forwardRef", "relationship": "Deprecated (mostly) in React 19 as refs can be passed as props." },
+    { "concept": "react-helmet", "relationship": "React 19 provides native support for metadata, replacing the need for external libraries like Helmet." }
+  ],
+  "concepts": [
+    {
+      "id": "ref_as_prop",
+      "name": "Ref as a Prop",
+      "type": "concept",
+      "description": "You can now pass `ref` as a prop to function components.",
+      "details": [
+        "No need to use `forwardRef` anymore.",
+        "The `ref` is accessible directly in the props object.",
+        "Simplifies higher-order components and component wrappers."
+      ],
+      "code_example": {
+        "snippet": "function MyInput({ placeholder, ref }) {\n  return <input placeholder={placeholder} ref={ref} />;\n}\n\n// Usage\n<MyInput ref={inputRef} />",
+        "explanation": "Note how `ref` is just another prop in the arguments list."
+      }
+    },
+    {
+      "id": "document_metadata",
+      "name": "Document Metadata",
+      "type": "concept",
+      "description": "Native support for rendering `<title>`, `<meta>`, and `<link>` tags anywhere in the component tree.",
+      "details": [
+        "React automatically hoists these tags to the `<head>`.",
+        "Works in both Client and Server Components.",
+        "Ensures duplicate tags (like multiple titles) are handled correctly (last one wins)."
+      ],
+      "code_example": {
+        "snippet": "function BlogPost({ title }) {\n  return (\n    <article>\n      <title>{title}</title>\n      <meta name=\"description\" content=\"A great post\" />\n      <h1>{title}</h1>\n    </article>\n  );\n}",
+        "explanation": "The `<title>` tag will be moved to the document `<head>` automatically."
+      }
+    },
+    {
+      "id": "cleanup_functions",
+      "name": "Cleanup Functions for Refs",
+      "type": "concept",
+      "description": "Ref callbacks can now return a cleanup function.",
+      "details": [
+        "Similar to `useEffect`, the cleanup runs when the element is removed.",
+        "Useful for cleaning up observers or subscriptions attached to a DOM node."
+      ],
+      "code_example": {
+        "snippet": "<div ref={node => {\n  const observer = new ResizeObserver(...);\n  observer.observe(node);\n  return () => observer.disconnect(); // Cleanup\n}} />",
+        "explanation": "React calls the returned function when the `div` unmounts."
+      }
+    }
+  ]
+}

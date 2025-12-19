@@ -1,0 +1,77 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Performance",
+    "sub_topic": "Optimization Techniques",
+    "version": "18+",
+    "doc_url": "https://react.dev/learn/render-and-commit"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["memoization", "rendering", "profiler", "code-splitting"],
+    "prerequisites": ["React Render Cycle", "JavaScript Event Loop"]
+  },
+  "mental_model": {
+    "analogy": "The Efficient Secretary",
+    "explanation": "A normal secretary types every letter from scratch every time (Re-render). An efficient secretary (Optimized React) keeps photocopies of common letters (Memoization) and only types the parts that changed. They also don't bring you all the files at once, only the ones you need right now (Code Splitting/Lazy Loading)."
+  },
+  "real_world_use_cases": [
+    "Preventing UI lag when typing in a search input.",
+    "Optimizing large lists of data (Virtualization).",
+    "Reducing initial load time of the application."
+  ],
+  "related_concepts": [
+    { "concept": "React.memo", "relationship": "HOC that prevents a component from re-rendering if its props haven't changed." },
+    { "concept": "useMemo/useCallback", "relationship": "Hooks to cache expensive calculations and function definitions." }
+  ],
+  "concepts": [
+    {
+      "id": "memoization",
+      "name": "Memoization",
+      "type": "concept",
+      "description": "Caching the results of expensive function calls.",
+      "details": [
+        "`React.memo`: Skips re-rendering a child if props are referentially equal.",
+        "`useMemo`: Caches a computed value until dependencies change.",
+        "`useCallback`: Caches a function definition to maintain referential equality for child props."
+      ],
+      "code_example": {
+        "snippet": "const MemoizedChild = React.memo(Child);\n\nfunction Parent() {\n  const handleClick = useCallback(() => console.log('click'), []);\n  return <MemoizedChild onClick={handleClick} />;\n}",
+        "explanation": "Without `useCallback`, `handleClick` would be a new function every render, causing `MemoizedChild` to re-render despite `React.memo`."
+      }
+    },
+    {
+      "id": "code_splitting",
+      "name": "Code Splitting",
+      "type": "concept",
+      "description": "Splitting the code into smaller bundles that can be loaded on demand.",
+      "details": [
+        "Implemented using dynamic `import()`.",
+        "React provides `lazy` and `Suspense` to handle loading states.",
+        "Reduces the initial bundle size, speeding up 'Time to Interactive'."
+      ]
+    },
+    {
+      "id": "virtualization",
+      "name": "List Virtualization",
+      "type": "concept",
+      "description": "Rendering only the items currently visible in the viewport.",
+      "details": [
+        "Essential for lists with thousands of items.",
+        "Libraries like `react-window` or `react-virtualized` handle the math.",
+        "Keeps the DOM lightweight."
+      ]
+    },
+    {
+      "id": "state_colocation",
+      "name": "State Colocation",
+      "type": "concept",
+      "description": "Moving state down to the lowest common ancestor.",
+      "details": [
+        "Prevents global or high-level state changes from re-rendering the entire tree.",
+        "If only a small button needs the state, keep the state in that button or its direct parent."
+      ]
+    }
+  ]
+}

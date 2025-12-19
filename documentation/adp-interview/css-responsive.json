@@ -1,0 +1,72 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "Frontend",
+    "topic": "Styling",
+    "sub_topic": "Responsive & Architecture",
+    "version": "CSS3+",
+    "doc_url": "https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["css", "responsive", "flexbox", "grid", "css-in-js", "styled-components"],
+    "prerequisites": ["CSS Fundamentals", "Box Model"]
+  },
+  "mental_model": {
+    "analogy": "Fluid vs. Solid Containers",
+    "explanation": "Old CSS (tables/fixed width) was like putting water in a glass box; if the screen got smaller, it overflowed or broke. Modern Responsive CSS is like putting water in a balloon; it expands and contracts to fit the space available using Flexbox, Grid, and Media Queries."
+  },
+  "real_world_use_cases": [
+    "Ensuring the app looks good on Mobile, Tablet, and Desktop.",
+    "Theming an application (Dark Mode/Light Mode).",
+    "Scoping styles to components to prevent side effects."
+  ],
+  "related_concepts": [
+    { "concept": "Mobile First", "relationship": "Design philosophy where you write styles for small screens first, then expand." },
+    { "concept": "BEM", "relationship": "Naming convention for traditional CSS to avoid clashes." }
+  ],
+  "concepts": [
+    {
+      "id": "responsive_techniques",
+      "name": "Modern Responsive Techniques",
+      "type": "concept",
+      "description": "Tools to make layouts adapt to viewport size.",
+      "details": [
+        "Flexbox: One-dimensional layout (rows OR columns). Great for alignment.",
+        "CSS Grid: Two-dimensional layout (rows AND columns). Great for page structure.",
+        "Media Queries: Applying styles based on breakpoints (`@media (min-width: 768px)`).",
+        "Relative Units: Using `rem`, `em`, `%`, `vw/vh` instead of `px`."
+      ]
+    },
+    {
+      "id": "css_in_js",
+      "name": "CSS-in-JS",
+      "type": "concept",
+      "description": "Writing CSS directly inside JavaScript components (e.g., Styled Components, Emotion).",
+      "details": [
+        "Pros: Scoped styles (no name collisions), Dynamic styling based on props, painless deletion (delete component = delete styles).",
+        "Cons: Runtime performance cost, larger bundle size, steeper learning curve."
+      ]
+    },
+    {
+      "id": "traditional_css",
+      "name": "Traditional CSS / CSS Modules",
+      "type": "concept",
+      "description": "Separate .css files or CSS Modules.",
+      "details": [
+        "Pros: Zero runtime cost, cacheable by browser, separate concerns.",
+        "Cons: Global namespace (unless using Modules), harder to maintain in large apps without conventions (BEM)."
+      ]
+    },
+    {
+      "id": "tailwind_css",
+      "name": "Utility-First CSS (Tailwind)",
+      "type": "concept",
+      "description": "Using pre-defined utility classes directly in HTML.",
+      "details": [
+        "Pros: Extremely fast development, consistent design system, no dead CSS.",
+        "Cons: 'Ugly' HTML clutter, learning curve for class names."
+      ]
+    }
+  ]
+}

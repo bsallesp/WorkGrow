@@ -1,0 +1,74 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "ASP.NET Core",
+    "topic": "Backend",
+    "sub_topic": "API Design",
+    "version": "6.0+",
+    "doc_url": "https://learn.microsoft.com/en-us/aspnet/core/web-api"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["rest", "http", "controllers", "dependency-injection", "middleware"],
+    "prerequisites": ["C#", "HTTP Protocol"]
+  },
+  "mental_model": {
+    "analogy": "The Restaurant Kitchen",
+    "explanation": "The API is the Kitchen. The Controller is the Head Chef (takes orders/requests). The Services are the Line Cooks (do the actual work/business logic). Dependency Injection is the Supplier who ensures every cook has the right knives and ingredients (dependencies) before the shift starts. Middleware is the Health Inspector/Security Guard at the door (checking requests before they reach the kitchen)."
+  },
+  "real_world_use_cases": [
+    "Exposing data to a React frontend.",
+    "Integrating with third-party services (Stripe, Twilio).",
+    "Handling authentication and authorization."
+  ],
+  "related_concepts": [
+    { "concept": "Minimal APIs", "relationship": "A newer, lighter way to build APIs in .NET without Controllers." },
+    { "concept": "Swagger/OpenAPI", "relationship": "The standard for documenting REST APIs (built-in to .NET Core)." }
+  ],
+  "concepts": [
+    {
+      "id": "rest_principles",
+      "name": "RESTful Principles",
+      "type": "concept",
+      "description": "Architectural style for designing networked applications.",
+      "details": [
+        "Stateless: Each request contains all info needed.",
+        "Resource-Based: URLs represent resources (nouns), HTTP methods represent actions (verbs).",
+        "Uniform Interface: Consistent naming and status codes (200 OK, 404 Not Found)."
+      ]
+    },
+    {
+      "id": "dependency_injection",
+      "name": "Dependency Injection (DI)",
+      "type": "concept",
+      "description": "Design pattern where objects receive their dependencies rather than creating them.",
+      "details": [
+        "Core feature of ASP.NET Core.",
+        "Lifetimes: Transient (new every time), Scoped (new per request), Singleton (created once).",
+        "Makes code testable and loosely coupled."
+      ]
+    },
+    {
+      "id": "middleware",
+      "name": "Middleware Pipeline",
+      "type": "concept",
+      "description": "Software components that are assembled into an application pipeline to handle requests and responses.",
+      "details": [
+        "Order matters (e.g., Auth before Controller).",
+        "Used for Logging, Exception Handling, Authentication, CORS.",
+        "Example: `app.UseAuthentication(); app.UseEndpoints(...);`"
+      ]
+    },
+    {
+      "id": "repository_pattern",
+      "name": "Repository Pattern",
+      "type": "concept",
+      "description": "Abstraction layer between the business logic and data access.",
+      "details": [
+        "Decouples the app from the specific database (EF Core).",
+        "Allows for easier unit testing (mocking the repository).",
+        "Typical methods: `GetAll()`, `GetById()`, `Add()`, `Save()`."
+      ]
+    }
+  ]
+}

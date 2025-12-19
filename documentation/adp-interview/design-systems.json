@@ -1,0 +1,66 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "Frontend",
+    "topic": "Architecture",
+    "sub_topic": "Design Systems",
+    "version": "General",
+    "doc_url": "https://bradfrost.com/blog/post/atomic-web-design/"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["atomic-design", "storybook", "reusability", "components"],
+    "prerequisites": ["React Components", "CSS Architecture"]
+  },
+  "mental_model": {
+    "analogy": "LEGO Sets",
+    "explanation": "A Design System is not just a pile of bricks; it's the instruction manual, the categorized bins of specific pieces (Atoms like buttons), small pre-built sections (Molecules like search bars), and full castle walls (Organisms like headers). It ensures that every LEGO castle built by the team looks like it belongs to the same kingdom."
+  },
+  "real_world_use_cases": [
+    "Ensuring brand consistency across multiple products.",
+    "Speeding up development by reusing pre-tested components.",
+    "Facilitating collaboration between Designers and Developers."
+  ],
+  "related_concepts": [
+    { "concept": "Storybook", "relationship": "The standard tool for developing, documenting, and testing UI components in isolation." },
+    { "concept": "Headless UI", "relationship": "Libraries (like Radix UI) that provide logic/a11y but no styles, perfect for building custom design systems." }
+  ],
+  "concepts": [
+    {
+      "id": "atomic_design",
+      "name": "Atomic Design",
+      "type": "concept",
+      "description": "A methodology for creating design systems.",
+      "details": [
+        "Atoms: Basic building blocks (Label, Input, Button).",
+        "Molecules: Groups of atoms (Search Form).",
+        "Organisms: Complex UI sections (Header, Sidebar).",
+        "Templates: Page-level layout structure.",
+        "Pages: Specific instances of templates with real content."
+      ]
+    },
+    {
+      "id": "component_library_principles",
+      "name": "Library Principles",
+      "type": "concept",
+      "description": "Key traits of a good component library.",
+      "details": [
+        "Composable: Components should work together like legos.",
+        "Customizable: Should accept props for variants (primary/secondary) and style overrides.",
+        "Accessible: Must support keyboard navigation and screen readers out of the box.",
+        "Documented: Usage examples and prop definitions are essential."
+      ]
+    },
+    {
+      "id": "monorepo",
+      "name": "Monorepo Strategy",
+      "type": "concept",
+      "description": "Keeping the Design System in the same repo as the app (e.g., using Nx or Turborepo).",
+      "details": [
+        "Allows for atomic commits (update component + update usage in one go).",
+        "Simplifies dependency management.",
+        "Ensures the app always uses the latest version of the UI."
+      ]
+    }
+  ]
+}

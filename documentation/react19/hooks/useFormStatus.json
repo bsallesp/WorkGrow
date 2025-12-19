@@ -1,0 +1,68 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Form Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useFormStatus"
+  },
+  "taxonomy": {
+    "difficulty": "Beginner",
+    "tags": ["forms", "status", "ux", "pending"],
+    "prerequisites": ["Forms in React", "Context (conceptually)"]
+  },
+  "mental_model": {
+    "analogy": "Department Status Dashboard",
+    "explanation": "Imagine you are an employee (child component) inside a specific department (form). You can look up at a dashboard (useFormStatus) to see if the department is currently busy processing a request. You don't need to ask the manager (pass props down); you just look up."
+  },
+  "real_world_use_cases": [
+    "Disabling a submit button inside a form while a request is pending.",
+    "Showing a loading spinner or progress bar inside a form component.",
+    "Displaying 'Saving...' or 'Submitting...' text based on form activity.",
+    "Automatically disabling all inputs in a fieldset when the form is submitting."
+  ],
+  "related_concepts": [
+    { "concept": "useActionState", "relationship": "Often used in the parent component to manage the action logic, while useFormStatus is used in children for UI feedback." },
+    { "concept": "Context", "relationship": "useFormStatus works like a specialized Context provider injected by the <form> element." }
+  ],
+  "concepts": [
+    {
+      "id": "use_form_status_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useFormStatus is a Hook that gives you status information of the last form submission.",
+      "details": [
+        "It must be called from a component that is rendered *inside* a `<form>` element.",
+        "It provides information about the pending state, data, method, and action of the parent form.",
+        "It does not take any arguments."
+      ],
+      "code_example": {
+        "snippet": "import { useFormStatus } from 'react-dom';\n\nfunction SubmitButton() {\n  const { pending } = useFormStatus();\n  return (\n    <button disabled={pending}>\n      {pending ? 'Submitting...' : 'Submit'}\n    </button>\n  );\n}\n\nfunction App() {\n  return (\n    <form action={submitAction}>\n      <input name=\"email\" />\n      <SubmitButton />\n    </form>\n  );\n}",
+        "explanation": "The `SubmitButton` component reads the `pending` state from the parent form. Note that `SubmitButton` is defined separately and used inside the form, which is required for `useFormStatus` to work."
+      }
+    },
+    {
+      "id": "use_form_status_return_value",
+      "name": "Return Value",
+      "type": "concept",
+      "description": "The hook returns a status object with specific properties.",
+      "details": [
+        "`pending`: A boolean. True if the parent form is currently submitting.",
+        "`data`: A FormData object containing the data that the parent form is submitting (or null).",
+        "`method`: The HTTP method (get or post) or null.",
+        "`action`: A reference to the function passed to the action prop or null."
+      ]
+    },
+    {
+      "id": "use_form_status_pitfall",
+      "name": "Pitfall: Component Location",
+      "type": "pitfall",
+      "description": "useFormStatus will not work if called in the same component that renders the `<form>`.",
+      "details": [
+        "It only tracks the status of a *parent* form.",
+        "If you need status in the same component, use `useActionState` instead or extract the inner content into a separate component."
+      ]
+    }
+  ]
+}

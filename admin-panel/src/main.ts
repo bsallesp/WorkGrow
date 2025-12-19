@@ -3,4 +3,7 @@ import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app';
 
 bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.error(err);
+    document.body.innerHTML = `<h1>Startup Error</h1><pre>${err?.message || err}</pre>`;
+  });

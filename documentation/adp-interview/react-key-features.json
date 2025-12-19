@@ -1,0 +1,73 @@
+{
+  "$schema": "../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Core",
+    "sub_topic": "Key Features",
+    "version": "18+",
+    "doc_url": "https://react.dev/learn"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["virtual-dom", "components", "jsx", "hooks", "one-way-data-flow"],
+    "prerequisites": ["JavaScript ES6+", "DOM API"]
+  },
+  "mental_model": {
+    "analogy": "The Architect and the Blueprint",
+    "explanation": "React acts as the Architect. You provide the Blueprint (JSX/Components). When data changes, the Architect redraws a new Blueprint (Virtual DOM), compares it to the old one (Diffing), and gives specific instructions to the construction crew (ReactDOM) to change *only* the parts of the building that are different (Reconciliation)."
+  },
+  "real_world_use_cases": [
+    "Building Single Page Applications (SPAs) with complex, interactive UIs.",
+    "Creating reusable UI components for a design system.",
+    "Managing dynamic data updates efficiently without reloading the page."
+  ],
+  "related_concepts": [
+    { "concept": "Vue/Angular", "relationship": "Alternative frameworks. React differs by focusing on 'Just JavaScript' and unidirectional data flow." },
+    { "concept": "jQuery", "relationship": "The old way. Direct DOM manipulation vs React's declarative state-driven approach." }
+  ],
+  "concepts": [
+    {
+      "id": "virtual_dom",
+      "name": "Virtual DOM",
+      "type": "concept",
+      "description": "A lightweight copy of the actual DOM kept in memory.",
+      "details": [
+        "React creates a new Virtual DOM tree on every render.",
+        "It compares (diffs) this new tree with the previous one.",
+        "It calculates the minimum number of updates needed for the real DOM."
+      ]
+    },
+    {
+      "id": "jsx",
+      "name": "JSX",
+      "type": "concept",
+      "description": "A syntax extension for JavaScript that looks like HTML.",
+      "details": [
+        "It is syntactic sugar for `React.createElement`.",
+        "It allows writing UI structure directly within JavaScript logic.",
+        "It prevents Injection Attacks by escaping values by default."
+      ]
+    },
+    {
+      "id": "unidirectional_data_flow",
+      "name": "Unidirectional Data Flow",
+      "type": "concept",
+      "description": "Data flows one way: down from parent to child via props.",
+      "details": [
+        "Makes application state predictable and easier to debug.",
+        "To update parent state, children invoke callback functions passed down as props (Inverse Data Flow)."
+      ]
+    },
+    {
+      "id": "hooks",
+      "name": "Hooks",
+      "type": "concept",
+      "description": "Functions that let you 'hook into' React state and lifecycle features from function components.",
+      "details": [
+        "Replaced the need for Class Components.",
+        "Enable logic reuse via Custom Hooks.",
+        "Rules: Only call at the top level, only call from React functions."
+      ]
+    }
+  ]
+}
