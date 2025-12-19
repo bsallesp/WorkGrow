@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "title": "useMemo",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "Performance Hooks",
+    "description": "Caches the result of a calculation between re-renders. It only re-calculates the value when one of its dependencies changes."
+  },
+  "taxonomy": {
+    "primary_domain": "Performance Optimization",
+    "secondary_domain": "State Management",
+    "related_concepts": [
+      "Memoization",
+      "Referential Equality",
+      "useCallback",
+      "React.memo"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Expensive Calculator",
+    "explanation": "Imagine a math genius who charges $100 for every problem. If you ask 'What is 234 * 956?', they solve it and charge you. If you ask the same question again 5 minutes later, a smart assistant (useMemo) intercepts you, checks their notebook, and gives you the answer from before without charging you $100 again. The genius is only disturbed if the numbers (dependencies) change."
+  },
+  "syntax": {
+    "signature": "const cachedValue = useMemo(calculateValue, dependencies)",
+    "parameters": [
+      {
+        "name": "calculateValue",
+        "type": "Function",
+        "description": "The function calculating the value that you want to cache. It should be pure, take no arguments, and return a value."
+      },
+      {
+        "name": "dependencies",
+        "type": "Array",
+        "description": "The list of all reactive values referenced inside the calculateValue code."
+      }
+    ],
+    "return_value": {
+      "type": "Any",
+      "description": "The result of calling calculateValue. On initial render, it calls the function. On subsequent renders, it returns the cached value if dependencies haven't changed."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Skipping Expensive Recalculations",
+      "description": "Caching a slow synchronous function (e.g., filtering a large array).",
+      "code_snippet": "import { useMemo } from 'react';\n\nfunction TodoList({ todos, filter }) {\n  const visibleTodos = useMemo(() => {\n    // This calculation is skipped if todos and filter haven't changed\n    return filterTodos(todos, filter);\n  }, [todos, filter]);\n  // ...\n}"
+    },
+    {
+      "pattern_name": "Memoizing Objects for Context or Props",
+      "description": "Preventing child re-renders by ensuring object references stay stable.",
+      "code_snippet": "const contextValue = useMemo(() => ({\n  currentUser,\n  login\n}), [currentUser, login]);"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Premature Optimization",
+      "solution": "Don't use useMemo for cheap calculations. It adds overhead. Trust React to be fast enough for most things.",
+      "severity": "Info"
+    },
+    {
+      "pitfall": "Ignoring Dependencies",
+      "solution": "Always include every value used inside the function in the dependency array to avoid stale data bugs.",
+      "severity": "Error"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Measure Performance First",
+      "reason": "Only optimize when you identify a bottleneck. React 19's Compiler may handle some of this automatically in the future."
+    },
+    {
+      "practice": "Keep Calculations Pure",
+      "reason": "The calculation function should not have side effects."
+    }
+  ]
+}

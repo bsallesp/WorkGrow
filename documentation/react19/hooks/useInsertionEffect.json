@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "useInsertionEffect",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "Effect Hooks",
+    "description": "A version of useEffect that fires before any DOM mutations. It is specifically designed for CSS-in-JS libraries to inject styles dynamically before the browser calculates layout."
+  },
+  "taxonomy": {
+    "primary_domain": "Performance Optimization",
+    "secondary_domain": "Styling",
+    "related_concepts": [
+      "CSS-in-JS",
+      "Layout Thrashing",
+      "useEffect",
+      "useLayoutEffect"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Blueprint Architect",
+    "explanation": "Imagine a construction site. Before the workers (the browser) start building walls (DOM mutations) or painting (layout/paint), the architect (useInsertionEffect) slips in the final blueprints (CSS rules). This ensures that when the building starts, everyone knows exactly what it should look like, preventing the need to tear down a wall and rebuild it (layout thrashing) because a rule arrived late."
+  },
+  "syntax": {
+    "signature": "useInsertionEffect(setup, dependencies?)",
+    "parameters": [
+      {
+        "name": "setup",
+        "type": "Function",
+        "description": "The function with your Effect logic. It can optionally return a cleanup function."
+      },
+      {
+        "name": "dependencies",
+        "type": "Array",
+        "optional": true,
+        "description": "The list of all reactive values referenced inside the setup code. If omitted, the effect runs after every render."
+      }
+    ],
+    "return_value": {
+      "type": "undefined",
+      "description": "Returns undefined."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Injecting Dynamic Styles",
+      "description": "Inserting global DOM nodes like <style> tags before React calculates layout.",
+      "code_snippet": "import { useInsertionEffect } from 'react';\n\nfunction useCSS(rule) {\n  useInsertionEffect(() => {\n    if (!isInserted.has(rule)) {\n      isInserted.add(rule);\n      document.head.appendChild(getStyleForRule(rule));\n    }\n  });\n  return rule;\n}"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Using for general data fetching",
+      "solution": "Use useEffect instead. useInsertionEffect is strictly for style injection.",
+      "severity": "Warning"
+    },
+    {
+      "pitfall": "Accessing refs",
+      "solution": "Do not access refs in useInsertionEffect because the DOM nodes have not been created/updated yet.",
+      "severity": "Error"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Limit to Library Authors",
+      "reason": "Application code rarely needs this hook; it is intended for CSS-in-JS library authors."
+    },
+    {
+      "practice": "Avoid Ref Access",
+      "reason": "Refs are not yet populated when this effect runs."
+    }
+  ]
+}

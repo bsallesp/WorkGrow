@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "useLayoutEffect",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "Effect Hooks",
+    "description": "A version of useEffect that fires synchronously after all DOM mutations but before the browser paints the screen. Use it to read layout from the DOM and synchronously re-render."
+  },
+  "taxonomy": {
+    "primary_domain": "DOM Manipulation",
+    "secondary_domain": "Rendering Lifecycle",
+    "related_concepts": [
+      "Painting",
+      "Layout",
+      "useEffect",
+      "Synchronous Execution"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Final Inspection",
+    "explanation": "Think of a factory line. useEffect is like a quality check that happens *after* the product is boxed and shipped (screen painted). useLayoutEffect is a check that happens *right before* the box is sealed. If you find a defect (wrong size/position), you fix it immediately. The customer (user) never sees the defective product, only the corrected one, but the line pauses (blocks paint) while you fix it."
+  },
+  "syntax": {
+    "signature": "useLayoutEffect(setup, dependencies?)",
+    "parameters": [
+      {
+        "name": "setup",
+        "type": "Function",
+        "description": "The function with your Effect logic. It can optionally return a cleanup function."
+      },
+      {
+        "name": "dependencies",
+        "type": "Array",
+        "optional": true,
+        "description": "The list of all reactive values referenced inside the setup code."
+      }
+    ],
+    "return_value": {
+      "type": "undefined",
+      "description": "Returns undefined."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Measuring Layout",
+      "description": "Reading the size or position of a DOM element before the user sees it.",
+      "code_snippet": "import { useLayoutEffect, useRef, useState } from 'react';\n\nfunction Tooltip({ children, targetRect }) {\n  const ref = useRef(null);\n  const [tooltipHeight, setTooltipHeight] = useState(0);\n\n  useLayoutEffect(() => {\n    const { height } = ref.current.getBoundingClientRect();\n    setTooltipHeight(height);\n  }, []);\n\n  // ... render tooltip logic\n}"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Overusing for everything",
+      "solution": "Prefer useEffect for most side effects to avoid blocking the visual update.",
+      "severity": "Warning"
+    },
+    {
+      "pitfall": "Server-Side Rendering (SSR) Warnings",
+      "solution": "useLayoutEffect does not run on the server. Use useEffect or conditional logic to avoid warnings during hydration.",
+      "severity": "Warning"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Use for Visual Adjustments Only",
+      "reason": "Only use it when the change is observable and would cause a flicker if done in useEffect."
+    },
+    {
+      "practice": "Measure then Render",
+      "reason": "Ideal for scenarios where the final render depends on the size of the initial render."
+    }
+  ]
+}
