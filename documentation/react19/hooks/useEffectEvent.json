@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Effect Hooks",
+    "version": "19.2.0",
+    "doc_url": "https://react.dev/reference/react/useEffectEvent"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["effects", "events", "stabilization", "linting"],
+    "prerequisites": ["useEffect", "Dependency Arrays", "Stale Closures"]
+  },
+  "mental_model": {
+    "analogy": "Periscope",
+    "explanation": "Your Effect is like a submarine underwater (isolated). Reactive dependencies are the engine (they make it move/re-run). `useEffectEvent` is like a periscope: it lets you peek at the surface world (latest props/state) without surfacing the whole submarine (re-running the effect)."
+  },
+  "real_world_use_cases": [
+    "Logging analytics inside an effect without re-triggering the effect when the logged data changes.",
+    "Handling a WebSocket message where the handler needs the latest state (e.g., `isMuted`) but shouldn't cause a reconnection when that state changes.",
+    "Fixing 'stale closure' bugs where an interval or subscription keeps seeing old state values."
+  ],
+  "related_concepts": [
+    { "concept": "useEffect", "relationship": "The parent hook where useEffectEvent is exclusively used." },
+    { "concept": "useCallback", "relationship": "Both create stable functions, but useEffectEvent functions are *not* allowed to be passed as props." },
+    { "concept": "Ref Pattern", "relationship": "The old workaround (using useRef to hold latest state) that useEffectEvent replaces." }
+  ],
+  "concepts": [
+    {
+      "id": "use_effect_event_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useEffectEvent is a Hook that lets you extract non-reactive logic from your Effects. It creates a special function that always sees the latest props and state but has a stable identity.",
+      "details": [
+        "It MUST be called at the top level of your component.",
+        "The returned function MUST ONLY be called inside `useEffect`.",
+        "It should NOT be added to the dependency array of the Effect.",
+        "It solves the problem of 'I want to read this value in my effect, but I don't want the effect to restart when it changes'."
+      ],
+      "code_example": {
+        "snippet": "function ChatRoom({ roomId, theme }) {\n  const onConnected = useEffectEvent(() => {\n    showNotification('Connected!', theme);\n  });\n\n  useEffect(() => {\n    const connection = createConnection(roomId);\n    connection.on('connected', () => {\n      onConnected();\n    });\n    connection.connect();\n    return () => connection.disconnect();\n  }, [roomId]); // 'theme' is NOT a dependency here!\n}",
+        "explanation": "Changing the 'theme' will NOT cause the chat to disconnect and reconnect. But when 'onConnected' runs, it will still use the *latest* theme value."
+      }
+    },
+    {
+      "id": "limitations_and_rules",
+      "name": "Strict Rules",
+      "type": "anti_pattern",
+      "description": "useEffectEvent is very restrictive compared to other hooks.",
+      "details": [
+        "DO NOT pass the event function to child components as a prop.",
+        "DO NOT use it inside `useMemo`, `useCallback`, or other non-effect hooks.",
+        "The linter (eslint-plugin-react-hooks) will enforce these rules to prevent bugs."
+      ]
+    }
+  ]
+}

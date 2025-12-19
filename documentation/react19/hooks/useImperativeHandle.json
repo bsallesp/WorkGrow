@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Ref Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useImperativeHandle"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["refs", "dom-manipulation", "encapsulation", "imperative"],
+    "prerequisites": ["useRef", "forwardRef (pre-React 19)", "Ref Props"]
+  },
+  "mental_model": {
+    "analogy": "Remote Control Programmable Button",
+    "explanation": "Normally, a parent component holding a 'remote control' (ref) to a child can do anything (like grab the whole DOM node). `useImperativeHandle` lets the child program exactly what buttons are on that remote. Instead of 'Power' and 'Volume', you might expose only 'Play' and 'Focus'."
+  },
+  "real_world_use_cases": [
+    "Exposing a `focus()` method on a complex custom Input component.",
+    "Controlling a video player component (play, pause, seek) without exposing the raw `<video>` tag.",
+    "Triggering a specific animation sequence in a child component from a parent."
+  ],
+  "related_concepts": [
+    { "concept": "useRef", "relationship": "The hook used by the parent to hold the handle." },
+    { "concept": "React.forwardRef", "relationship": "Historically required to pass the ref down; in React 19, refs are passed as simple props." }
+  ],
+  "concepts": [
+    {
+      "id": "use_imperative_handle_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useImperativeHandle is a React Hook that lets you customize the handle exposed as a ref.",
+      "details": [
+        "It takes three arguments: the `ref`, a `createHandle` function, and an optional dependency array.",
+        "It allows you to restrict what a parent can do with a child's ref.",
+        "Instead of returning a DOM node, you return a custom object with methods."
+      ],
+      "code_example": {
+        "snippet": "function MyInput({ ref }) {\n  const inputRef = useRef(null);\n\n  useImperativeHandle(ref, () => {\n    return {\n      focus() {\n        inputRef.current.focus();\n      },\n      scrollIntoView() {\n        inputRef.current.scrollIntoView();\n      },\n    };\n  }, []);\n\n  return <input ref={inputRef} />;\n}",
+        "explanation": "The parent component can call `ref.current.focus()`, but it CANNOT access properties like `ref.current.value` or `ref.current.style`, because they weren't exposed in the handle."
+      }
+    },
+    {
+      "id": "declarative_vs_imperative",
+      "name": "Declarative vs Imperative",
+      "type": "concept",
+      "description": "React prefers declarative code (props flow down). This hook is an escape hatch for imperative code.",
+      "details": [
+        "Use this sparingly.",
+        "If you can achieve the result by passing a prop (e.g., `<Modal isOpen={true} />`), do that instead of calling a method (`modalRef.current.open()`).",
+        "It is mostly useful for library authors or integrating with imperative DOM APIs (focus, media, scroll)."
+      ]
+    }
+  ]
+}
