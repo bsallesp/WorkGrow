@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { QuestionGeneratorComponent } from './components/question-generator/question-generator';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, QuestionGeneratorComponent],
+  imports: [QuestionGeneratorComponent],
   template: `
     <div class="app-container">
       <header class="app-header">

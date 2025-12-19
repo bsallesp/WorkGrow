@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DocumentationService, Domain, Topic } from '../../services/documentation';
 
 @Component({
   selector: 'app-question-generator',
@@ -20,6 +21,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
             <option value="" disabled>Select a domain...</option>
             <option *ngFor="let domain of availableDomains" [value]="domain.id">{{ domain.name }}</option>
           </select>
+          <div *ngIf="isLoading" class="loading-hint">Loading domains...</div>
         </div>
 
         <!-- Topic Selection (Dynamic based on Domain) -->
@@ -27,7 +29,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
           <label for="topic">Source Topic</label>
           <select id="topic" formControlName="sourceTopic">
             <option value="" disabled>Select a topic...</option>
-            <option *ngFor="let topic of currentTopics" [value]="topic">{{ topic }}</option>
+            <option *ngFor="let topic of currentTopics" [value]="topic.id">{{ topic.name }} ({{ topic.type }})</option>
           </select>
         </div>
 
@@ -57,6 +59,10 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
           <button type="submit" class="btn btn-primary" [disabled]="!genForm.valid || isGenerating">
             {{ isGenerating ? 'Generating...' : 'Generate Questions' }}
           </button>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
         </div>
 
       </form>
@@ -89,35 +95,60 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
       display: flex;
       justify-content: flex-end;
     }
+
+    .loading-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .error-message {
+      color: var(--error-color);
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
   `]
 })
-export class QuestionGeneratorComponent {
+export class QuestionGeneratorComponent implements OnInit {
   genForm: FormGroup;
   isGenerating = false;
+  isLoading = false;
+  errorMessage = '';
 
-  // Mock Data - In real app, this would come from an API listing available doc folders
-  availableDomains = [
-    { id: 'react19', name: 'React 19 Hooks', topics: [
-      'useActionState', 'useCallback', 'useContext', 'useDebugValue', 
-      'useDeferredValue', 'useEffect', 'useEffectEvent', 'useId', 
-      'useImperativeHandle', 'useInsertionEffect', 'useLayoutEffect', 
-      'useMemo', 'useOptimistic', 'useReducer', 'useRef', 
-      'useState', 'useSyncExternalStore', 'useTransition'
-    ]},
-    { id: 'postgres', name: 'PostgreSQL', topics: [
-      'Indexing', 'Joins', 'Transactions', 'JSONB', 'Extensions'
-    ]}
-  ];
+  availableDomains: Domain[] = [];
+  currentTopics: Topic[] = [];
 
-  currentTopics: string[] = [];
-
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private docService: DocumentationService
+  ) {
     this.genForm = this.fb.group({
       domain: ['', Validators.required],
       sourceTopic: ['', Validators.required],
       difficulty: ['beginner', Validators.required],
       count: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
       reviewMode: [true]
+    });
+  }
+
+  ngOnInit() {
+    this.loadCatalog();
+  }
+
+  loadCatalog() {
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    this.docService.getCatalog().subscribe({
+      next: (domains) => {
+        this.availableDomains = domains;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load catalog', err);
+        this.errorMessage = 'Failed to load documentation catalog. Ensure backend is running.';
+        this.isLoading = false;
+      }
     });
   }
 

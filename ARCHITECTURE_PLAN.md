@@ -1,61 +1,62 @@
-# Arquitetura de Nuvem e Escolha de Banco de Dados
+# Cloud Architecture and Database Selection
 
-## 1. Recomendação de Banco de Dados: Azure Cosmos DB (Modo Serverless)
+## 1. Database Recommendation: Azure Cosmos DB (Serverless Mode)
 
-Para armazenar o conteúdo gerado (perguntas, quizzes) e manter a compatibilidade com o formato JSON da nossa documentação, a melhor escolha equilibrando **custo** e **modernidade** é o **Azure Cosmos DB for NoSQL** utilizando a camada **Serverless**.
+To store the generated content (questions, quizzes) and maintain compatibility with our documentation's JSON format, the best choice balancing **cost** and **modernity** is **Azure Cosmos DB for NoSQL** using the **Serverless** tier.
 
-### Por que Serverless?
-*   **Custo Zero quando Ocioso:** Ao contrário dos bancos provisionados tradicionais onde você paga por hora (mesmo se ninguém usar), no modo Serverless você paga apenas por **Request Unit (RU)** consumida. Se ninguém acessar o app, você paga apenas centavos pelo armazenamento (espaço em disco).
-*   **Nativo JSON:** Como toda a nossa documentação está em JSON, o Cosmos DB armazena esses documentos nativamente sem necessidade de ORMs complexos ou conversão de esquema (Schema-less).
-*   **Escalabilidade:** Se o app crescer, ele escala automaticamente.
+### Why Serverless?
+*   **Zero Cost when Idle:** Unlike traditional provisioned databases where you pay hourly (even if no one uses it), in Serverless mode you only pay per **Request Unit (RU)** consumed. If no one accesses the app, you only pay pennies for storage (disk space).
+*   **Native JSON:** Since all our documentation is in JSON, Cosmos DB stores these documents natively without the need for complex ORMs or schema conversion (Schema-less).
+*   **Scalability:** If the app grows, it scales automatically.
 
-### Alternativa "Ultra-Low Cost" (Apenas se o orçamento for extremamente restrito)
-*   **Azure Table Storage:** É mais barato que o Cosmos DB, mas é um armazenamento de chave-valor simples.
-    *   *Contra:* Não permite consultas complexas (ex: "me dê todas as perguntas de nível difícil sobre useEffect"). Você teria que fazer essa filtragem no código, o que aumenta a complexidade.
-    *   *Recomendação:* Fique com o Cosmos DB Serverless pela facilidade de desenvolvimento, a menos que o volume de dados seja gigantesco e o orçamento quase zero.
+### "Ultra-Low Cost" Alternative (Only if budget is strictly zero)
+*   **Azure Table Storage:** It is cheaper than Cosmos DB, but it is a simple key-value store.
+    *   *Con:* Does not allow complex queries (e.g., "give me all hard questions about useEffect"). You would have to filter this in code, increasing complexity.
+    *   *Recommendation:* Stick with Cosmos DB Serverless for ease of development, unless the data volume is massive and the budget is virtually zero.
 
 ---
 
-## 2. Arquitetura Proposta: Azure Serverless
+## 2. Proposed Architecture: Azure Serverless
 
-Para garantir a "forma barata" que você solicitou, a arquitetura deve ser totalmente orientada a eventos (Serverless). Isso elimina custos fixos de servidores rodando 24/7.
+To ensure the "cheap way" you requested, the architecture must be fully event-driven (Serverless). This eliminates fixed costs of running servers 24/7.
 
-### Componentes:
+### Components:
 
-1.  **Frontend (Hospedagem):**
-    *   **Serviço:** Azure Static Web Apps.
-    *   **Custo:** Possui um **Plano Gratuito** generoso que inclui hospedagem global, certificado SSL e CI/CD integrado com GitHub.
+1.  **Frontend (Hosting):**
+    *   **Service:** Azure Static Web Apps.
+    *   **Framework:** Angular (v19+).
+    *   **Cost:** Has a generous **Free Plan** that includes global hosting, SSL certificate, and integrated CI/CD with GitHub.
 
-2.  **Backend (API & Lógica):**
-    *   **Serviço:** Azure Functions.
-    *   **Plano:** Consumption Plan (Plano de Consumo).
-    *   **Custo:** Os primeiros 1 milhão de execuções por mês são **gratuitos**. Você paga apenas quando a função roda para gerar uma pergunta ou salvar um resultado.
+2.  **Backend (API & Logic):**
+    *   **Service:** Azure Functions.
+    *   **Plan:** Consumption Plan.
+    *   **Cost:** The first 1 million executions per month are **free**. You only pay when the function runs to generate a question or save a result.
 
-3.  **Banco de Dados:**
-    *   **Serviço:** Azure Cosmos DB for NoSQL (Serverless).
-    *   **Custo:** Pay-per-operation. Estimativa para dev/teste é muito baixa (< $5/mês para uso moderado).
+3.  **Database:**
+    *   **Service:** Azure Cosmos DB for NoSQL (Serverless).
+    *   **Cost:** Pay-per-operation. Estimate for dev/test is very low (< $5/month for moderate use).
 
-4.  **Armazenamento de Arquivos (Imagens/Assets):**
-    *   **Serviço:** Azure Blob Storage.
-    *   **Custo:** Centavos por GB.
+4.  **File Storage (Images/Assets):**
+    *   **Service:** Azure Blob Storage.
+    *   **Cost:** Pennies per GB.
 
-### Fluxo de Dados:
+### Data Flow:
 
 ```mermaid
 graph TD
-    User[Usuário] -->|Acessa App| StaticWeb[Azure Static Web App (React)]
-    StaticWeb -->|Requisita Quiz| FuncApp[Azure Functions (Node.js/Python)]
+    User[User] -->|Access App| StaticWeb[Azure Static Web App (React)]
+    StaticWeb -->|Request Quiz| FuncApp[Azure Functions (Node.js/Python)]
     
-    subgraph "Camada de Dados"
-        FuncApp -->|Lê Documentação| Blob[Azure Blob Storage (JSONs Originais)]
-        FuncApp -->|Lê/Escreve Perguntas| Cosmos[Azure Cosmos DB (Serverless)]
+    subgraph "Data Layer"
+        FuncApp -->|Read Documentation| Blob[Azure Blob Storage (Original JSONs)]
+        FuncApp -->|Read/Write Questions| Cosmos[Azure Cosmos DB (Serverless)]
     end
     
-    FuncApp -->|Gera Pergunta| AI[Azure OpenAI / OpenAI API]
+    FuncApp -->|Generate Question| AI[Azure OpenAI / OpenAI API]
 ```
 
-## Resumo da Decisão
+## Decision Summary
 
-*   **Banco:** Azure Cosmos DB for NoSQL (Serverless).
-*   **Arquitetura:** Serverless (Static Web Apps + Azure Functions).
-*   **Vantagem Principal:** Custo fixo virtualmente zero. O custo escala linearmente com o uso real.
+*   **Database:** Azure Cosmos DB for NoSQL (Serverless).
+*   **Architecture:** Serverless (Static Web Apps + Azure Functions).
+*   **Key Advantage:** Virtually zero fixed cost. Cost scales linearly with actual usage.

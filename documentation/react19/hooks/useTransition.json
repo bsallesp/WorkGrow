@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "title": "useTransition",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "Performance Hooks",
+    "description": "A hook that lets you update the state without blocking the UI. It marks a state update as a 'transition', allowing the user interface to remain responsive while the update is calculated."
+  },
+  "taxonomy": {
+    "primary_domain": "Concurrency",
+    "secondary_domain": "User Experience",
+    "related_concepts": [
+      "Blocking vs Non-blocking",
+      "useDeferredValue",
+      "Suspense",
+      "Optimistic UI"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Background Download",
+    "explanation": "Imagine clicking 'Download' on a large file. If the browser froze completely until the download finished, you'd be frustrated (Blocking UI). Instead, the browser starts the download in the background and lets you keep browsing other tabs (Non-blocking/Transition). `useTransition` tells React: 'Start this update, but don't freeze the screen. Let the user keep typing or clicking while you work on it in the background.'"
+  },
+  "syntax": {
+    "signature": "const [isPending, startTransition] = useTransition()",
+    "parameters": [],
+    "return_value": {
+      "type": "Array",
+      "description": "Returns an array with two values: [isPending, startTransition]."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Tab Switching",
+      "description": "Switching between heavy views without freezing the interface.",
+      "code_snippet": "import { useState, useTransition } from 'react';\nimport TabButton from './TabButton.js';\nimport AboutTab from './AboutTab.js';\nimport PostsTab from './PostsTab.js';\nimport ContactTab from './ContactTab.js';\n\nfunction TabContainer() {\n  const [isPending, startTransition] = useTransition();\n  const [tab, setTab] = useState('about');\n\n  function selectTab(nextTab) {\n    startTransition(() => {\n      setTab(nextTab);\n    });\n  }\n\n  return (\n    <>\n      <TabButton isActive={tab === 'about'} onClick={() => selectTab('about')}>About</TabButton>\n      <TabButton isActive={tab === 'posts'} onClick={() => selectTab('posts')}>Posts</TabButton>\n      <TabButton isActive={tab === 'contact'} onClick={() => selectTab('contact')}>Contact</TabButton>\n      <hr />\n      {isPending && 'Loading...'}\n      {tab === 'about' && <AboutTab />}\n      {tab === 'posts' && <PostsTab />}\n      {tab === 'contact' && <ContactTab />}\n    </>\n  );\n}"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Wrapping Input State",
+      "solution": "Do not use transitions for inputs that control text fields. Inputs must update synchronously to avoid the user feeling 'lag'. Use it for the *consequence* of the input (e.g., filtering a list).",
+      "severity": "Warning"
+    },
+    {
+      "pitfall": "Async Functions in startTransition",
+      "solution": "React 19 now supports async functions in startTransition to handle pending states for Server Actions automatically.",
+      "severity": "Info"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Indicate Loading State",
+      "reason": "Always use the `isPending` flag to show a spinner or loading indicator so the user knows something is happening."
+    },
+    {
+      "practice": "Heavy Updates Only",
+      "reason": "Only use transitions for updates that cause a noticeable freeze. Overusing it adds complexity."
+    }
+  ]
+}
