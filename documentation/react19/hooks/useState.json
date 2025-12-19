@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "useState",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "State Hooks",
+    "description": "The most fundamental hook for adding state variable to your component. It preserves a value between renders and triggers a re-render when the value changes."
+  },
+  "taxonomy": {
+    "primary_domain": "State Management",
+    "secondary_domain": "Component Lifecycle",
+    "related_concepts": [
+      "Re-rendering",
+      "Immutability",
+      "useReducer",
+      "Controlled Components"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Light Switch",
+    "explanation": "Think of a component like a room. Local variables are like words spoken in the room—they disappear as soon as you stop speaking (function finishes). `useState` is like a light switch on the wall. If you flip it ON, it stays ON even if you leave the room and come back. The room 'remembers' the state of the switch. Changing the switch (calling setFunction) changes the environment and forces everyone to look around again (re-render)."
+  },
+  "syntax": {
+    "signature": "const [state, setState] = useState(initialState)",
+    "parameters": [
+      {
+        "name": "initialState",
+        "type": "any",
+        "description": "The value you want the state to be initially. It can be a value of any type or a function (initializer function) that returns the initial value."
+      }
+    ],
+    "return_value": {
+      "type": "Array",
+      "description": "Returns an array with exactly two values: [currentState, setFunction]."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Basic Counter",
+      "description": "Tracking a simple number value.",
+      "code_snippet": "import { useState } from 'react';\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n\n  function handleClick() {\n    setCount(count + 1);\n  }\n\n  return <button onClick={handleClick}>You pressed me {count} times</button>;\n}"
+    },
+    {
+      "pattern_name": "Updater Function",
+      "description": "Using a function to update state based on the previous state, crucial for multiple updates in the same event.",
+      "code_snippet": "function handleClick() {\n  setAge(a => a + 1); // setAge(42 => 43)\n  setAge(a => a + 1); // setAge(43 => 44)\n  setAge(a => a + 1); // setAge(44 => 45)\n}"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Direct Mutation",
+      "solution": "Never modify state directly (e.g., state.count = 5). It won't trigger a re-render. Always use the set function.",
+      "severity": "Error"
+    },
+    {
+      "pitfall": "Stale State in Closures",
+      "solution": "If you need the current state inside an async callback or effect, use the functional update form: setState(prev => prev + 1).",
+      "severity": "Warning"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Group Related State",
+      "reason": "If two state variables always change together, consider combining them into a single object or using useReducer."
+    },
+    {
+      "practice": "Lazy Initialization",
+      "reason": "If the initial state is the result of an expensive calculation, pass a function to useState: useState(() => computeExpensiveValue())."
+    }
+  ]
+}

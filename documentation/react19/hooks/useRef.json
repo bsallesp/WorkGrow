@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "title": "useRef",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "Ref Hooks",
+    "description": "A hook that lets you reference a value that's not needed for rendering. Updating it does not trigger a re-render. It is commonly used to access DOM elements directly."
+  },
+  "taxonomy": {
+    "primary_domain": "DOM Access",
+    "secondary_domain": "Performance Optimization",
+    "related_concepts": [
+      "Mutable State",
+      "Instance Variables",
+      "forwardRef"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Secret Pocket",
+    "explanation": "Your component is like a person giving a presentation (rendering). State (useState) is what you write on the whiteboard for everyone to see—changing it makes you erase and rewrite (re-render). A Ref (useRef) is a note inside your secret pocket. You can take it out, read it, scribble on it, and put it back as many times as you want. The audience sees nothing, and you don't have to stop your presentation to update the whiteboard."
+  },
+  "syntax": {
+    "signature": "const ref = useRef(initialValue)",
+    "parameters": [
+      {
+        "name": "initialValue",
+        "type": "any",
+        "description": "The value you want the ref object's current property to be initially."
+      }
+    ],
+    "return_value": {
+      "type": "Object",
+      "description": "Returns an object with a single property: { current: initialValue }."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Manipulating the DOM",
+      "description": "Focusing an input, scrolling to an element, or measuring size.",
+      "code_snippet": "import { useRef } from 'react';\n\nfunction TextInput() {\n  const inputRef = useRef(null);\n\n  function handleClick() {\n    inputRef.current.focus();\n  }\n\n  return (\n    <>\n      <input ref={inputRef} />\n      <button onClick={handleClick}>Focus the input</button>\n    </>\n  );\n}"
+    },
+    {
+      "pattern_name": "Storing Timers/Intervals",
+      "description": "Keeping track of a timer ID to clear it later without triggering renders.",
+      "code_snippet": "const intervalRef = useRef(null);\n// ...\nclearInterval(intervalRef.current);"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Reading/Writing Ref during Render",
+      "solution": "Do not read or write ref.current during rendering. Use it in event handlers or Effects instead.",
+      "severity": "Error"
+    },
+    {
+      "pitfall": "Using Ref for Data Flow",
+      "solution": "If a piece of information determines what is displayed on screen, it should be State, not a Ref.",
+      "severity": "Warning"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Escape Hatch",
+      "reason": "Treat refs as an escape hatch. If you can do it with state/props, do it that way first."
+    },
+    {
+      "practice": "Null Initialization",
+      "reason": "Initialize DOM refs with null, as the element doesn't exist at the time of initial render."
+    }
+  ]
+}

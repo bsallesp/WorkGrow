@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "title": "useSyncExternalStore",
+    "version": "React 19",
+    "type": "Hook",
+    "category": "Effect Hooks",
+    "description": "A hook that lets you subscribe to an external store (like Redux, Zustand, or browser APIs) in a way that is compatible with concurrent rendering features."
+  },
+  "taxonomy": {
+    "primary_domain": "External Data",
+    "secondary_domain": "Concurrency",
+    "related_concepts": [
+      "Tearing",
+      "Store Subscription",
+      "useEffect",
+      "Server Side Rendering"
+    ]
+  },
+  "mental_model": {
+    "analogy": "The Live News Ticker",
+    "explanation": "Imagine you are watching a live news ticker (your component). The news (data) comes from a satellite feed (external store) that updates constantly, independent of your TV. `useSyncExternalStore` is the dedicated cable connecting the satellite to your TV. It ensures that the ticker on your screen always matches the exact moment of the satellite feed, preventing 'tearing' where half the sentence is old news and half is new news."
+  },
+  "syntax": {
+    "signature": "const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot?)",
+    "parameters": [
+      {
+        "name": "subscribe",
+        "type": "Function",
+        "description": "A function that takes a callback argument and subscribes it to the store. When the store changes, invoke the callback."
+      },
+      {
+        "name": "getSnapshot",
+        "type": "Function",
+        "description": "A function that returns the current value of the data from the store."
+      },
+      {
+        "name": "getServerSnapshot",
+        "type": "Function",
+        "optional": true,
+        "description": "A function that returns the initial snapshot used during server rendering."
+      }
+    ],
+    "return_value": {
+      "type": "any",
+      "description": "The current snapshot of the store."
+    }
+  },
+  "usage_patterns": [
+    {
+      "pattern_name": "Subscribing to Browser APIs",
+      "description": "Reading the current window size or online status safely.",
+      "code_snippet": "import { useSyncExternalStore } from 'react';\n\nfunction subscribe(callback) {\n  window.addEventListener('online', callback);\n  window.addEventListener('offline', callback);\n  return () => {\n    window.removeEventListener('online', callback);\n    window.removeEventListener('offline', callback);\n  };\n}\n\nfunction getSnapshot() {\n  return navigator.onLine;\n}\n\nfunction ChatStatus() {\n  const isOnline = useSyncExternalStore(subscribe, getSnapshot);\n  return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;\n}"
+    }
+  ],
+  "common_pitfalls": [
+    {
+      "pitfall": "Creating New Snapshots on Every Render",
+      "solution": "The getSnapshot function must return a cached value or the same object reference if the data hasn't changed, otherwise it will cause infinite re-render loops.",
+      "severity": "Critical"
+    },
+    {
+      "pitfall": "Using for Local State",
+      "solution": "Do not use this for data managed within React (props/state). Use it only for data living *outside* React's tree.",
+      "severity": "Warning"
+    }
+  ],
+  "best_practices": [
+    {
+      "practice": "Library Authors Primary",
+      "reason": "This hook is primarily intended for authors of state management libraries, not for everyday application code."
+    },
+    {
+      "practice": "Stable Subscribe Function",
+      "reason": "Ensure the subscribe function reference is stable (defined outside the component or memoized) to avoid unnecessary re-subscriptions."
+    }
+  ]
+}
