@@ -1,12 +1,32 @@
 {
+  "$schema": "../../../schemas/hook-schema.json",
   "meta": {
     "technology": "React",
     "topic": "Hooks",
     "sub_topic": "Effect Hooks",
     "version": "19.0.0",
-    "doc_url": "https://react.dev/reference/react/useEffect",
-    "tags": ["effect", "side-effects", "lifecycle", "synchronization"]
+    "doc_url": "https://react.dev/reference/react/useEffect"
   },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["effect", "side-effects", "lifecycle", "synchronization"],
+    "prerequisites": ["Components", "Rendering", "useState"]
+  },
+  "mental_model": {
+    "analogy": "Synchronization",
+    "explanation": "Think of useEffect as a way to synchronize your component with an external system (like a server, the DOM, or a timer). It's not a lifecycle event like 'componentDidMount'; it's a statement that says 'This component's state must match this external reality'."
+  },
+  "real_world_use_cases": [
+    "Fetching data from an API when a component mounts or when a query changes.",
+    "Subscribing to a chat service or WebSocket.",
+    "Reading from or writing to the browser's localStorage.",
+    "Integrating with third-party DOM libraries (like maps or charts)."
+  ],
+  "related_concepts": [
+    { "concept": "useLayoutEffect", "relationship": "Alternative for when you need to measure DOM layout before painting." },
+    { "concept": "useState", "relationship": "Often used together to store the data fetched by an effect." },
+    { "concept": "useSyncExternalStore", "relationship": "Recommended over useEffect for subscribing to external stores." }
+  ],
   "concepts": [
     {
       "id": "use_effect_definition",

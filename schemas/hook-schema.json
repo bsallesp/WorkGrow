@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "technology": { "type": "string" },
+        "topic": { "type": "string" },
+        "sub_topic": { "type": "string" },
+        "version": { "type": "string" },
+        "doc_url": { "type": "string" }
+      },
+      "required": ["technology", "topic", "sub_topic", "version", "doc_url"]
+    },
+    "taxonomy": {
+      "type": "object",
+      "properties": {
+        "difficulty": { "type": "string", "enum": ["Beginner", "Intermediate", "Advanced"] },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "prerequisites": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["difficulty", "tags", "prerequisites"]
+    },
+    "mental_model": {
+      "type": "object",
+      "properties": {
+        "analogy": { "type": "string" },
+        "explanation": { "type": "string" }
+      },
+      "required": ["analogy", "explanation"]
+    },
+    "real_world_use_cases": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "related_concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "concept": { "type": "string" },
+          "relationship": { "type": "string" }
+        },
+        "required": ["concept", "relationship"]
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "description": { "type": "string" },
+          "details": { "type": "array", "items": { "type": "string" } },
+          "code_example": {
+            "type": "object",
+            "properties": {
+              "snippet": { "type": "string" },
+              "explanation": { "type": "string" }
+            }
+          }
+        },
+        "required": ["id", "name", "type", "description", "details"]
+      }
+    }
+  },
+  "required": ["meta", "taxonomy", "mental_model", "real_world_use_cases", "related_concepts", "concepts"]
+}

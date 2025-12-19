@@ -1,0 +1,72 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Form Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useActionState"
+  },
+  "taxonomy": {
+    "difficulty": "Intermediate",
+    "tags": ["forms", "actions", "async", "state-management"],
+    "prerequisites": ["useState", "Forms in React", "Async/Await"]
+  },
+  "mental_model": {
+    "analogy": "Smart Form Assistant",
+    "explanation": "Imagine a form assistant that automatically tracks if a submission is in progress ('isPending') and remembers the last server response ('state'). You just give it the instructions ('action') and the starting point ('initialState'), and it handles the bookkeeping for you."
+  },
+  "real_world_use_cases": [
+    "Handling form submissions (login, registration, data entry) with automatic loading states.",
+    "Displaying validation errors returned from the server after a failed submission.",
+    "Managing complex state transitions triggered by user actions, even outside of forms.",
+    "Implementing progressive enhancement where forms work even before JavaScript loads (with Server Components)."
+  ],
+  "related_concepts": [
+    { "concept": "useFormStatus", "relationship": "Used in child components to access the pending state of the parent form." },
+    { "concept": "useOptimistic", "relationship": "Used alongside useActionState to show immediate feedback while the action is pending." },
+    { "concept": "Server Actions", "relationship": "The async functions often passed to useActionState to run logic on the server." }
+  ],
+  "concepts": [
+    {
+      "id": "use_action_state_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useActionState is a Hook that allows you to update component state based on the result of a form action. It simplifies managing the lifecycle of async operations, especially in forms.",
+      "details": [
+        "It replaces the need to manually create `isPending` and `error` states for form submissions.",
+        "It takes an asynchronous function (Action) and an initial state.",
+        "It returns the current state, a wrapped action to pass to the form, and a pending flag."
+      ],
+      "code_example": {
+        "snippet": "import { useActionState } from 'react';\n\nasync function updateName(previousState, formData) {\n  const name = formData.get('name');\n  if (!name) return { error: 'Name is required' };\n  // ... perform update ...\n  return { success: 'Updated!' };\n}\n\nfunction NameForm() {\n  const [state, submitAction, isPending] = useActionState(updateName, null);\n\n  return (\n    <form action={submitAction}>\n      <input name=\"name\" />\n      <button disabled={isPending}>Update</button>\n      {state?.error && <p>{state.error}</p>}\n    </form>\n  );\n}",
+        "explanation": "Here, `useActionState` manages the submission. `isPending` automatically disables the button during the request. `state` captures the return value (error or success) from `updateName`."
+      }
+    },
+    {
+      "id": "use_action_state_signature",
+      "name": "Function Signature",
+      "type": "concept",
+      "description": "The hook signature is: `const [state, formAction, isPending] = useActionState(fn, initialState, permalink?)`",
+      "details": [
+        "`fn`: The function to call when the form is submitted. It receives `previousState` as the first argument and `formData` as the second.",
+        "`initialState`: The value of the state before the action is first called.",
+        "`permalink`: (Optional) A URL string for progressive enhancement in Server Components contexts.",
+        "`state`: The current state (return value of the last action execution).",
+        "`formAction`: The function to pass to `<form action={...}>`.",
+        "`isPending`: True if the action is currently executing."
+      ]
+    },
+    {
+      "id": "use_action_state_vs_use_state",
+      "name": "Comparison with useState",
+      "type": "concept",
+      "description": "While `useState` is for general client-side state, `useActionState` is specialized for state derived from async actions, particularly form submissions.",
+      "details": [
+        "With `useState`, you manually toggle `setIsPending(true)` before fetch and `setIsPending(false)` after.",
+        "With `useActionState`, React handles the pending state automatically during the transition.",
+        "useActionState encourages the pattern of 'Actions' which can be reused and composed."
+      ]
+    }
+  ]
+}
