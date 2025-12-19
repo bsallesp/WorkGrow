@@ -13,12 +13,21 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
       
       <form [formGroup]="genForm" (ngSubmit)="onSubmit()">
         
-        <!-- Source Topic -->
+        <!-- Domain Selection (e.g., React 19, Postgres) -->
         <div class="input-group">
-          <label for="topic">Source Topic (Knowledge Base)</label>
+          <label for="domain">Documentation Domain</label>
+          <select id="domain" formControlName="domain" (change)="onDomainChange()">
+            <option value="" disabled>Select a domain...</option>
+            <option *ngFor="let domain of availableDomains" [value]="domain.id">{{ domain.name }}</option>
+          </select>
+        </div>
+
+        <!-- Topic Selection (Dynamic based on Domain) -->
+        <div class="input-group">
+          <label for="topic">Source Topic</label>
           <select id="topic" formControlName="sourceTopic">
-            <option value="" disabled>Select a hook...</option>
-            <option *ngFor="let hook of hooks" [value]="hook">{{ hook }}</option>
+            <option value="" disabled>Select a topic...</option>
+            <option *ngFor="let topic of currentTopics" [value]="topic">{{ topic }}</option>
           </select>
         </div>
 
@@ -86,21 +95,40 @@ export class QuestionGeneratorComponent {
   genForm: FormGroup;
   isGenerating = false;
 
-  hooks = [
-    'useActionState', 'useCallback', 'useContext', 'useDebugValue', 
-    'useDeferredValue', 'useEffect', 'useEffectEvent', 'useId', 
-    'useImperativeHandle', 'useInsertionEffect', 'useLayoutEffect', 
-    'useMemo', 'useOptimistic', 'useReducer', 'useRef', 
-    'useState', 'useSyncExternalStore', 'useTransition'
+  // Mock Data - In real app, this would come from an API listing available doc folders
+  availableDomains = [
+    { id: 'react19', name: 'React 19 Hooks', topics: [
+      'useActionState', 'useCallback', 'useContext', 'useDebugValue', 
+      'useDeferredValue', 'useEffect', 'useEffectEvent', 'useId', 
+      'useImperativeHandle', 'useInsertionEffect', 'useLayoutEffect', 
+      'useMemo', 'useOptimistic', 'useReducer', 'useRef', 
+      'useState', 'useSyncExternalStore', 'useTransition'
+    ]},
+    { id: 'postgres', name: 'PostgreSQL', topics: [
+      'Indexing', 'Joins', 'Transactions', 'JSONB', 'Extensions'
+    ]}
   ];
+
+  currentTopics: string[] = [];
 
   constructor(private fb: FormBuilder) {
     this.genForm = this.fb.group({
+      domain: ['', Validators.required],
       sourceTopic: ['', Validators.required],
       difficulty: ['beginner', Validators.required],
       count: [3, [Validators.required, Validators.min(1), Validators.max(10)]],
       reviewMode: [true]
     });
+  }
+
+  onDomainChange() {
+    const selectedDomainId = this.genForm.get('domain')?.value;
+    const domain = this.availableDomains.find(d => d.id === selectedDomainId);
+    
+    this.currentTopics = domain ? domain.topics : [];
+    
+    // Reset topic selection
+    this.genForm.patchValue({ sourceTopic: '' });
   }
 
   onSubmit() {
