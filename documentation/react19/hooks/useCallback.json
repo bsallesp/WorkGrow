@@ -1,0 +1,82 @@
+{
+  "$schema": "../../../schemas/hook-schema.json",
+  "meta": {
+    "technology": "React",
+    "topic": "Hooks",
+    "sub_topic": "Performance Hooks",
+    "version": "19.0.0",
+    "doc_url": "https://react.dev/reference/react/useCallback"
+  },
+  "taxonomy": {
+    "difficulty": "Advanced",
+    "tags": ["performance", "memoization", "referential-equality", "optimization"],
+    "prerequisites": ["Rendering Behavior", "Referential Equality", "React.memo"]
+  },
+  "mental_model": {
+    "analogy": "Saved Signature Stamp",
+    "explanation": "Imagine you have a stamp with your signature. Instead of signing every document by hand (creating a new function every render), you use the stamp (the cached function). You only need to carve a new stamp if your signature changes (dependencies change)."
+  },
+  "real_world_use_cases": [
+    "Passing a function prop to a child component wrapped in `React.memo` to prevent it from re-rendering unnecessarily.",
+    "Using a function as a dependency in `useEffect` or `useMemo` (to keep the dependency stable).",
+    "Preventing 'infinite loops' where a function causes an effect to run, which updates state, which recreates the function.",
+    "Library development where stable callbacks are expected by consumers."
+  ],
+  "related_concepts": [
+    { "concept": "useMemo", "relationship": "Similar to useCallback, but caches the *result* of a function, not the function itself." },
+    { "concept": "React.memo", "relationship": "The HOC that typically requires useCallback to be effective." },
+    { "concept": "React Compiler", "relationship": "In React 19+, the compiler automates this memoization, reducing the need for manual useCallback." }
+  ],
+  "concepts": [
+    {
+      "id": "use_callback_definition",
+      "name": "Definition",
+      "type": "concept",
+      "description": "useCallback is a React Hook that lets you cache a function definition between re-renders. It returns a memoized version of the callback that only changes if one of the dependencies has changed.",
+      "details": [
+        "On the initial render, it returns the function you passed.",
+        "On subsequent renders, it compares dependencies with the previous render.",
+        "If dependencies are unchanged, it returns the *same function instance* from before.",
+        "This relies on JavaScript's referential equality (Object.is)."
+      ],
+      "code_example": {
+        "snippet": "const handleSubmit = useCallback((orderDetails) => {\n  post('/product/' + productId + '/buy', {\n    referrer,\n    orderDetails,\n  });\n}, [productId, referrer]);",
+        "explanation": "Here, `handleSubmit` will point to the exact same function in memory across renders, unless `productId` or `referrer` changes. This allows downstream components to skip re-rendering if they check for prop equality."
+      }
+    },
+    {
+      "id": "referential_equality_trap",
+      "name": "The Referential Equality Trap",
+      "type": "concept",
+      "description": "In JavaScript, `function() {} !== function() {}`. Even if the code is identical, a new function created inside a component is a *different object* every render.",
+      "details": [
+        "Without `useCallback`, passing a function to a child component means passing a 'new' prop every time.",
+        "This breaks optimizations like `React.memo` or `PureComponent`, causing the child to re-render even if nothing else changed.",
+        "`useCallback` fixes this by preserving the function's identity."
+      ]
+    },
+    {
+      "id": "react_compiler_impact",
+      "name": "Impact of React Compiler (React 19)",
+      "type": "advanced_concept",
+      "description": "React 19 introduces the React Compiler, which can automatically memoize components and hooks.",
+      "details": [
+        "If your project uses the React Compiler, manual `useCallback` calls may become redundant.",
+        "The compiler automatically detects when a function's dependencies haven't changed and preserves its identity.",
+        "However, `useCallback` remains part of the standard API and is safe to keep."
+      ]
+    },
+    {
+      "id": "premature_optimization",
+      "name": "Premature Optimization",
+      "type": "anti_pattern",
+      "description": "Using `useCallback` everywhere by default is often harmful or useless.",
+      "details": [
+        "It adds memory overhead (keeping old functions and dependency arrays).",
+        "It adds code complexity.",
+        "If the child component isn't optimized (e.g., using `React.memo`), passing a stable function does absolutely nothing for performance.",
+        "Only use it when you have a specific performance problem or a dependency stability requirement."
+      ]
+    }
+  ]
+}
